@@ -7,8 +7,18 @@ import javax.swing.*;
 
 public class Graphic extends Component {
 	
-	private JComponent canvas;
+	private Sprite sprite;
 	
+	public Graphic (GameObject owner) {
+		compType = Constants.ComponentType.graphic;
+		sprite = new Sprite(this);
+	}
 	
-
+	public void tick () {
+		
+	}
+	
+	public Sprite getSprite() {
+		return sprite;
+	}
 }

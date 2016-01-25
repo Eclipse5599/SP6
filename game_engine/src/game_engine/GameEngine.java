@@ -3,6 +3,8 @@ package game_engine;
 //The awesomesauce game engine making the game a game omg lol!
 
 import javax.swing.*;
+
+import java.util.ArrayList;
 //import java.awt.event.*;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class GameEngine {
 	private JFrame frame = new JFrame();
 	
 	
-	private List<GameObject> gameobjects;
+	private List<GameObject> gameobjects = new ArrayList<GameObject>();
 	
 	public GameEngine() {
 		frame.setSize(600, 600);
@@ -40,5 +42,10 @@ public class GameEngine {
 	
 	void addObject(GameObject g) {
 		gameobjects.add(g);
+		if (g.hasComponent(Constants.ComponentType.graphic)) {
+			frame.add(((Graphic)(g.getComponent(Constants.ComponentType.graphic))).getSprite());
+			frame.revalidate();
+			frame.repaint();
+		}
 	}
 }
