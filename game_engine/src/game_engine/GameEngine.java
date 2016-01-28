@@ -58,5 +58,8 @@ public class GameEngine {
 		if (g.hasComponent(Constants.ComponentType.graphic)) {
 			renderer.addGraphicComponent((Graphic)g.getComponent(Constants.ComponentType.graphic));
 		}
+		if (g.hasComponent(Constants.ComponentType.controller)) {
+			input.addController(((GameObjectController)g.getComponent(Constants.ComponentType.controller)));
+		}
 	}
 }
