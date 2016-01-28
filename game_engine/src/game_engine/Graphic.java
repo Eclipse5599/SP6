@@ -1,5 +1,7 @@
 package game_engine;
 
+import java.awt.Image;
+
 //Contains graphical data based on information in the component class
 
 import javax.swing.*;
@@ -7,18 +9,23 @@ import javax.swing.*;
 
 public class Graphic extends Component {
 	
-	private Sprite sprite;
+	//private Sprite sprite;
+	private Image sprite;
 	
-	public Graphic (GameObject owner) {
+	public Graphic (String imagePath) {
 		compType = Constants.ComponentType.graphic;
-		sprite = new Sprite(this);
+		//spirte = Loader.loadImage(imagePath);
 	}
 	
 	public void tick () {
 		
 	}
 	
-	public Sprite getSprite() {
+	public Image getSprite() {
 		return sprite;
 	}
+	
+	//public Sprite getSprite() {
+	//	return sprite;
+	//}
 }

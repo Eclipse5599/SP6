@@ -10,9 +10,11 @@ public class TestGame {
 		
 		GameObject testObject = new GameObject(20, 20, true, true); //Create a GameObject at coordinate (0, 0), is static and is collideable.
 		
-		testObject.addComponent(new Graphic(testObject));
+		testObject.addComponent(new Graphic(null));
+		testObject.addComponent(new GameObjectController());
 		
 		g.addObject(testObject);
+		g.gameLoop();
 	}
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 public class GameObject {
 	List<Component> components = new ArrayList<Component>();
 	
+	private GameEngine gameEngine;
 	private GameObject parent;
 	private boolean isStatic;
 	private boolean collideable;

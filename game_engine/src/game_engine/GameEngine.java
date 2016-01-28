@@ -16,9 +16,10 @@ public class GameEngine {
 	private SoundEngine sounds;
 	
 	private JFrame frame = new JFrame();
-	
-	
 	private List<GameObject> gameobjects = new ArrayList<GameObject>();
+	
+	private boolean exit = false;
+	private boolean movementDetected = true;
 	
 	public GameEngine() {
 		frame.setSize(600, 600);
@@ -30,22 +31,32 @@ public class GameEngine {
 		input = new InputHandler();
 		loader = new Loader();
 		physics = new PhysicsEngine();
-		renderer = new Renderer(frame);
+		renderer = new Renderer();
 		sounds = new SoundEngine();
+		
+		frame.add(renderer);
+		frame.addKeyListener(input);
+		frame.setFocusable(true);
 	}
 	
 	void gameLoop() {
-		for(GameObject g : gameobjects) {
-			g.tick();
+		while (!exit) {
+			input.checkInputToControllers();
+			for(GameObject g : gameobjects) {
+				g.tick();
+			}
+			if (movementDetected) {
+				movementDetected = false;
+				frame.revalidate();
+				frame.repaint();
+			}
 		}
 	}
 	
 	void addObject(GameObject g) {
 		gameobjects.add(g);
 		if (g.hasComponent(Constants.ComponentType.graphic)) {
-			frame.add(((Graphic)(g.getComponent(Constants.ComponentType.graphic))).getSprite());
-			frame.revalidate();
-			frame.repaint();
+			renderer.addGraphicComponent((Graphic)g.getComponent(Constants.ComponentType.graphic));
 		}
 	}
 }
