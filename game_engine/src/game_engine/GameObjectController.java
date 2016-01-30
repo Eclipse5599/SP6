@@ -9,8 +9,17 @@ public class GameObjectController extends Component {
 	private Physics physicsComponent;
 	
 	public GameObjectController (Physics physicsComponent) {
-		this.physicsComponent = physicsComponent;
 		compType = Constants.ComponentType.controller;
+		this.physicsComponent = physicsComponent;
+	}
+	
+	public GameObjectController (Physics physicsComponent, int keyCodeUp, int keyCodeRight, int keyCodeDown, int keyCodeLeft) {
+		compType = Constants.ComponentType.controller;
+		this.physicsComponent = physicsComponent;
+		up = keyCodeUp;
+		right = keyCodeRight;
+		down = keyCodeDown;
+		left = keyCodeLeft;
 	}
 	
 	public void tick (double delta) {
