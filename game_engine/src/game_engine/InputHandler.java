@@ -13,11 +13,11 @@ public class InputHandler implements KeyListener {
 	
 	public void checkInputToControllers () {
 		if (!pressedKeys.isEmpty()) {
-			for (GameObjectController controller : controllers) {
-				controller.input(pressedKeys);
-			}
+//			for (GameObjectController controller : controllers) {
+//				controller.input(pressedKeys);
+//			}
 		}
-		pressedKeys.clear();
+//		pressedKeys.clear();
 	}
 	
 	public void addController (GameObjectController newController) {
@@ -34,6 +34,9 @@ public class InputHandler implements KeyListener {
 		Integer key = e.getKeyCode();
 		if (!pressedKeys.contains(key)) {
 			pressedKeys.add(key);
+			for (GameObjectController controller : controllers) {
+				controller.addInput(key);
+			}
 		}
 	}
 
@@ -42,6 +45,9 @@ public class InputHandler implements KeyListener {
 		Integer key = e.getKeyCode();
 		if (pressedKeys.contains(key)) {
 			pressedKeys.remove(key);
+			for (GameObjectController controller : controllers) {
+				controller.removeInput(key);
+			}
 		}
 	}	
 }

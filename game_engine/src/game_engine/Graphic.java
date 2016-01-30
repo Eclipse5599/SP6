@@ -17,7 +17,7 @@ public class Graphic extends Component {
 		//spirte = Loader.loadImage(imagePath);
 	}
 	
-	public void tick () {
+	public void tick (double delta) {
 		
 	}
 	

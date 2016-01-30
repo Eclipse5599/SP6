@@ -8,10 +8,12 @@ public class TestGame {
 		GameEngine g = new GameEngine();
 		g.initialize();
 		
-		GameObject testObject = new GameObject(20, 20, true, true); //Create a GameObject at coordinate (0, 0), is static and is collideable.
+		GameObject testObject = new GameObject("Player" ,20, 20, true, true); //Create a GameObject at coordinate (0, 0), is static and is collideable.
 		
 		testObject.addComponent(new Graphic(null));
-		testObject.addComponent(new GameObjectController());
+		Physics physics = new Physics(1.0);
+		testObject.addComponent(physics);
+		testObject.addComponent(new GameObjectController(physics));
 		
 		g.addObject(testObject);
 		g.gameLoop();

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 //Renders graphical components to the screen
 //For later stages: decide what components to render to avoid rendering assets that can't be seen
 
-import javax.swing.*;
+import javax.swing.JPanel;
 //import java.awt.event.*;
 
 public class Renderer extends JPanel {

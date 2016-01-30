@@ -20,6 +20,8 @@ public class GameEngine {
 	
 	private boolean exit = false;
 	private boolean movementDetected = true;
+	private final int frames = 60;
+	private Timer deltaTimer = new Timer();
 	
 	public GameEngine() {
 		frame.setSize(600, 600);
@@ -41,14 +43,24 @@ public class GameEngine {
 	
 	void gameLoop() {
 		while (!exit) {
+			deltaTimer.reset();
 			input.checkInputToControllers();
 			for(GameObject g : gameobjects) {
-				g.tick();
+				g.tick(deltaTimer.getDeltaMillis());
 			}
+			
+			movementDetected = physics.doPhysics(deltaTimer.getDeltaMillis());
 			if (movementDetected) {
 				movementDetected = false;
 				frame.revalidate();
 				frame.repaint();
+			}
+			
+			try {
+				Thread.sleep((long) (frames*deltaTimer.getDeltaMillis()));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -61,5 +73,8 @@ public class GameEngine {
 		if (g.hasComponent(Constants.ComponentType.controller)) {
 			input.addController(((GameObjectController)g.getComponent(Constants.ComponentType.controller)));
 		}
+		if (g.hasComponent(Constants.ComponentType.physics)) {
+			physics.addPhysicsComponent(((Physics)g.getComponent(Constants.ComponentType.physics)));
+		} 
 	}
 }
