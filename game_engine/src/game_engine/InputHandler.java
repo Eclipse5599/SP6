@@ -11,15 +11,6 @@ public class InputHandler implements KeyListener {
 	private ArrayList<GameObjectController> controllers = new ArrayList<GameObjectController>();
 	public ArrayList<Integer> pressedKeys = new ArrayList<Integer>();
 	
-	public void checkInputToControllers () {
-		if (!pressedKeys.isEmpty()) {
-//			for (GameObjectController controller : controllers) {
-//				controller.input(pressedKeys);
-//			}
-		}
-//		pressedKeys.clear();
-	}
-	
 	public void addController (GameObjectController newController) {
 		controllers.add(newController);
 	}

@@ -4,11 +4,13 @@ public class Timer {
 
 	private long startTime;
 	private long pauseTime;
+	private long checkTime;
 	
 	private boolean paused = false;
 	
 	public Timer () {
 		startTime = System.currentTimeMillis();
+		checkTime = startTime;
 	}
 	
 	public void reset () {
@@ -30,13 +32,14 @@ public class Timer {
 		}
 	}
 	
-	public double getDeltaMillis () {
-		double delta = ((System.currentTimeMillis() - startTime));
+	public long getDeltaMillis () {
+		long delta = ((System.currentTimeMillis() - checkTime));
+		checkTime = System.currentTimeMillis();
 		return delta;
 	}
 	
-	public double getDeltaSeconds () {
-		double delta = ((System.currentTimeMillis() - startTime) / 1000);
+	public float getDeltaSeconds () {
+		float delta = (getDeltaMillis() / 1000f);
 		return delta;
 	}
 }

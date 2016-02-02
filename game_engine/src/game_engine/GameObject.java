@@ -11,12 +11,14 @@ public class GameObject {
 	
 	private GameEngine gameEngine;
 	private GameObject parent;
+	private ArrayList<GameObject> children;
 	private boolean isStatic;
 	private boolean collideable;
 	private Transform transform;
 	private String name;
 	
-	public GameObject (String name, GameObject parent, int x, int y, boolean isstatic, boolean iscollideable) {
+	public GameObject (GameEngine game, String name, GameObject parent, int x, int y, boolean isstatic, boolean iscollideable) {
+		gameEngine = game;
 		this.name = name;
 		this.parent = parent;
 		transform = new Transform(x, y);
@@ -24,14 +26,15 @@ public class GameObject {
 		collideable = iscollideable;
 	}
 	
-	public GameObject (String name, int x, int y, boolean isstatic, boolean iscollideable) {
+	public GameObject (GameEngine game, String name, int x, int y, boolean isstatic, boolean iscollideable) {
+		gameEngine = game;
 		this.name = name;
 		transform = new Transform(x, y);
 		isStatic = isstatic;
 		collideable = iscollideable;
 	}
 	
-	public void tick (double delta) {
+	public void tick (float delta) {
 		for (Component c : components) {
 			c.tick(delta);
 		}
@@ -75,6 +78,10 @@ public class GameObject {
 	
 	public Transform getTransform () {
 		return transform;
+	}
+	
+	public GameEngine getEngine () {
+		return gameEngine;
 	}
 	
 	//Setters

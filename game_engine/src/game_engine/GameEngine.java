@@ -42,14 +42,17 @@ public class GameEngine {
 	}
 	
 	void gameLoop() {
+		frame.revalidate();
+		frame.repaint();
 		while (!exit) {
-			deltaTimer.reset();
-			input.checkInputToControllers();
+			long deltaMillis = deltaTimer.getDeltaMillis();
+			float delta = deltaMillis/1000f;
+			//System.out.println("Seconds: " + delta + ", Millis: " + deltaMillis);
 			for(GameObject g : gameobjects) {
-				g.tick(deltaTimer.getDeltaMillis());
+				g.tick(delta);
 			}
 			
-			movementDetected = physics.doPhysics(deltaTimer.getDeltaMillis());
+			movementDetected = physics.doPhysics(delta);
 			if (movementDetected) {
 				movementDetected = false;
 				frame.revalidate();
@@ -57,9 +60,8 @@ public class GameEngine {
 			}
 			
 			try {
-				Thread.sleep((long) (frames*deltaTimer.getDeltaMillis()));
+				Thread.sleep((long) (frames*(delta)));
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -76,5 +78,9 @@ public class GameEngine {
 		if (g.hasComponent(Constants.ComponentType.physics)) {
 			physics.addPhysicsComponent(((Physics)g.getComponent(Constants.ComponentType.physics)));
 		} 
+	}
+	
+	public Loader getLoader () {
+		return loader;
 	}
 }

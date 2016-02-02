@@ -2,7 +2,7 @@ package game_engine;
 
 public class Transform extends Component {
 
-	private int x, y;
+	private float x, y;
 	private float scale;
 	
 	public Transform (int x, int y) {
@@ -16,11 +16,11 @@ public class Transform extends Component {
 		this.scale = scale;
 	}
 
-	public int getX() {
+	public float getX() {
 		return x;
 	}
 	
-	public int getY() {
+	public float getY() {
 		return y;
 	}
 
@@ -28,11 +28,11 @@ public class Transform extends Component {
 		return scale;
 	}
 	
-	public void setX(int x) {
+	public void setX(float x) {
 		this.x = x;
 	}
 
-	public void setY(int y) {
+	public void setY(float y) {
 		this.y = y;
 	}
 

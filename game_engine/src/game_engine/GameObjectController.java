@@ -22,7 +22,7 @@ public class GameObjectController extends Component {
 		left = keyCodeLeft;
 	}
 	
-	public void tick (double delta) {
+	public void tick (float delta) {
 		if (!input.isEmpty()) {
 			if (input.contains(up)) {
 				physicsComponent.moveUp(delta);

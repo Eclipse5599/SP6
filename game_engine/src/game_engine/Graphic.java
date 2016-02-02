@@ -1,27 +1,26 @@
 package game_engine;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 //Contains graphical data based on information in the component class
-
-import javax.swing.*;
-//import java.awt.event.*;
 
 public class Graphic extends Component {
 	
 	//private Sprite sprite;
-	private Image sprite;
+	private BufferedImage sprite;
 	
 	public Graphic (String imagePath) {
 		compType = Constants.ComponentType.graphic;
-		//spirte = Loader.loadImage(imagePath);
+		if (imagePath != null) {
+			sprite = Loader.loadImage(imagePath);
+		}
 	}
 	
-	public void tick (double delta) {
+	public void tick (float delta) {
 		
 	}
 	
-	public Image getSprite() {
+	public BufferedImage getSprite() {
 		return sprite;
 	}
 	

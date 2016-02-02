@@ -3,16 +3,20 @@ package game_engine;
 //Holds data related to physics 
 
 public class Physics extends Component {
-	private double mass;
-	private double xVelocity = 0;
-	private double yVelocity = 0;
-	private double maxVelocity;
-	private double minVelocity;
-	private double acceleration = 1;
-	private static double absoluteMaxVelocity = 10;
+	private float mass;
+	private float xVelocity = 0;
+	private float yVelocity = 0;
+	private float maxVelocity;
+	private float minVelocity;
+	private float acceleration = 50f;
+	private static float absoluteMaxVelocity = 100;
 	
-	public Physics (double mass) {
+	
+	//TODO: Hastigheter åt två motsatta håll tar ej ut varandra.
+	//TODO: Accelerationer upp/vänster är långsammare än accelerationen åt höger/ner.
+	public Physics (float mass) {
 		compType = Constants.ComponentType.physics;
+		this.mass = mass;
 		maxVelocity = absoluteMaxVelocity/mass;
 		minVelocity = -maxVelocity; 
 		if (maxVelocity < 1) {
@@ -25,61 +29,55 @@ public class Physics extends Component {
 	}
 	
 	@Override
-	public void tick (double delta) {
+	public void tick (float delta) {
 		//Slow down
 		if (yVelocity != 0) {
 			yVelocity /= 2;
 		}
-		if (yVelocity < 0.001 && yVelocity > 0){
-			yVelocity = 0;
-		}
-		if (yVelocity > -0.001 && yVelocity < 0){
+		if ((yVelocity < 0.001 && yVelocity > 0) || (yVelocity > -0.001 && yVelocity < 0)){
 			yVelocity = 0;
 		}
 		
 		if (xVelocity != 0) {
 			xVelocity /= 2;
 		}
-		if (xVelocity < 0.001 && xVelocity > 0){
-			xVelocity = 0;
-		}
-		if (xVelocity > -0.001 && xVelocity < 0){
+		if ((xVelocity < 0.001 && xVelocity > 0) || (xVelocity > -0.001 && xVelocity < 0)){
 			xVelocity = 0;
 		}
 	}
 	
-	public void moveUp (double delta) {
+	public void moveUp (float delta) {
 		yVelocity -= acceleration;
 		if (yVelocity < minVelocity){
 			yVelocity = minVelocity;
 		}
 	}
 	
-	public void moveRight (double delta) {
+	public void moveRight (float delta) {
 		xVelocity += acceleration;
 		if (xVelocity < maxVelocity){
 			xVelocity = maxVelocity;
 		}
 	}
 	
-	public void moveDown (double delta) {
+	public void moveDown (float delta) {
 		yVelocity += acceleration;
 		if (yVelocity < maxVelocity){
 			yVelocity = maxVelocity;
 		}
 	}
-	public void moveLeft (double delta) {
+	public void moveLeft (float delta) {
 		xVelocity -= acceleration;
 		if (xVelocity < minVelocity){
 			xVelocity = minVelocity;
 		}
 	}
 	
-	public double getXVelocity () {
+	public float getXVelocity () {
 		return xVelocity;
 	}
 	
-	public double getYVelocity () {
+	public float getYVelocity () {
 		return yVelocity;
 	}
 }

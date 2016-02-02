@@ -7,7 +7,7 @@ public abstract class Component {
 	protected GameObject owner;
 	protected Constants.ComponentType compType;
 	
-	public void tick(double delta) {
+	public void tick(float delta) {
 		
 	}
 	
