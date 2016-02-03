@@ -28,7 +28,6 @@ public class PhysicsEngine {
 	}
 	
 	public void addPhysicsComponent (Physics p) {
-		System.out.println("Adding physicComponent");
 		physicsComponents.add(p);
 	}
 }

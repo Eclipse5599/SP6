@@ -16,7 +16,7 @@ public class Loader {
 	
 	public static BufferedImage loadImage (String imagePath) {
 		try {
-			BufferedImage img = ImageIO.read(new File("./game_engine/assets/" + imagePath));
+			BufferedImage img = ImageIO.read(new File("./assets/" + imagePath));
 			return img;
 		} catch (IOException e) {
 			e.printStackTrace();

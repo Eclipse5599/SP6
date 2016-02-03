@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class InputHandler implements KeyListener {
 
 	private ArrayList<GameObjectController> controllers = new ArrayList<GameObjectController>();
-	public ArrayList<Integer> pressedKeys = new ArrayList<Integer>();
 	
 	public void addController (GameObjectController newController) {
 		controllers.add(newController);
@@ -23,22 +22,16 @@ public class InputHandler implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		Integer key = e.getKeyCode();
-		if (!pressedKeys.contains(key)) {
-			pressedKeys.add(key);
-			for (GameObjectController controller : controllers) {
-				controller.addInput(key);
-			}
+		for (GameObjectController controller : controllers) {
+			controller.addInput(key);
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		Integer key = e.getKeyCode();
-		if (pressedKeys.contains(key)) {
-			pressedKeys.remove(key);
-			for (GameObjectController controller : controllers) {
-				controller.removeInput(key);
-			}
+		for (GameObjectController controller : controllers) {
+			controller.removeInput(key);
 		}
 	}	
 }

@@ -25,25 +25,29 @@ public class GameObjectController extends Component {
 	public void tick (float delta) {
 		if (!input.isEmpty()) {
 			if (input.contains(up)) {
-				physicsComponent.moveUp(delta);
+				physicsComponent.moveUp();
 			} 
 			if (input.contains(right)) {
-				physicsComponent.moveRight(delta);
+				physicsComponent.moveRight();
 			} 
 			if (input.contains(down)) {
-				physicsComponent.moveDown(delta);
+				physicsComponent.moveDown();
 			} 
 			if (input.contains(left)) {
-				physicsComponent.moveLeft(delta);
+				physicsComponent.moveLeft();
 			}
 		}
 	}
 	
 	public void addInput (Integer pressedKey) {
-		input.add(pressedKey);
+		if (!input.contains(pressedKey)) {
+			input.add(pressedKey);
+		}
 	}
 	
 	public void removeInput (Integer pressedKey) {
-		input.remove(pressedKey);
+		if (input.contains(pressedKey)) {
+			input.remove(pressedKey);
+		}
 	}
 }
