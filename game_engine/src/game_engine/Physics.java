@@ -8,7 +8,7 @@ public class Physics extends Component {
 	private float yVelocity = 0;
 	private float maxVelocity;
 	private float minVelocity;
-	private float acceleration = 50f;
+	private float acceleration = 10f;
 	private static float absoluteMaxVelocity = 100;
 	
 	

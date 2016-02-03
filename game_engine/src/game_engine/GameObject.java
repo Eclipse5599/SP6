@@ -89,7 +89,4 @@ public class GameObject {
 		this.isStatic = isStatic;
 	}
 	
-	public void setCollideable (boolean collideable) {
-		this.collideable = collideable;
-	}
 }

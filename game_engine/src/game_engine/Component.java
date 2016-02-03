@@ -22,4 +22,6 @@ public abstract class Component {
 	public void setOwner(GameObject owner) {
 		this.owner = owner;
 	}
+	
+	
 }
