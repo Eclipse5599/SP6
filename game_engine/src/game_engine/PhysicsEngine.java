@@ -17,11 +17,12 @@ public class PhysicsEngine {
 			if (p.getXVelocity() != 0 || p.getYVelocity() != 0) {
 				movedObject = true;
 				Transform trans = p.getOwnerTransform(); 
-				float xVel = p.getXVelocity()*delta;
-				float yVel = p.getYVelocity()*delta;
-				System.out.println("XVel: " + xVel + ", YVel: " + yVel);
-				trans.setX(trans.getX() + xVel);
-				trans.setY(trans.getY() + yVel);
+				
+				float xMovement = p.getXVelocity()*delta;
+				float yMovement = p.getYVelocity()*delta;
+				System.out.println("XMovement: " + xMovement + ", YMovement: " + yMovement);
+				trans.setX(trans.getX() + xMovement);
+				trans.setY(trans.getY() + yMovement);
 			}
 		}
 		return movedObject;
