@@ -12,7 +12,6 @@ public class GameObject {
 	private GameEngine gameEngine;
 	private GameObject parent;
 	private ArrayList<GameObject> children;
-	private boolean isStatic = true, collideable = false;
 	private Transform transform;
 	private String name;
 	
@@ -38,12 +37,6 @@ public class GameObject {
 	public void addComponent (Component c) {
 		components.add(c);
 		c.setOwner(this);
-		if (c.getType() == Constants.ComponentType.collider) {
-			collideable = true;
-		}
-		if (c.getType() == Constants.ComponentType.physics) {
-			isStatic = false;
-		}
 	}
 	
 	public boolean hasComponent (Constants.ComponentType type) {
