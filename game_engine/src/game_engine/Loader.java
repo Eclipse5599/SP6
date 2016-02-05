@@ -15,6 +15,8 @@ public class Loader {
 	private Map<String, BufferedImage> loadedImages = new HashMap<String, BufferedImage>();
 	private Map<String, Clip> loadedSounds = new HashMap<String, Clip>();
 	
+	private String assetsFolder = "./assets/";
+	
 	private Loader () {
 		
 	}
@@ -33,7 +35,7 @@ public class Loader {
 			return loadedImages.get(imagePath);
 		} else {
 			try {
-				BufferedImage img = ImageIO.read(new File("./assets/" + imagePath));
+				BufferedImage img = ImageIO.read(new File(assetsFolder + imagePath));
 				
 				loadedImages.put(imagePath, img);
 				return img;
@@ -51,7 +53,7 @@ public class Loader {
 		} else {
 			try {
 				Clip sound = AudioSystem.getClip();
-				AudioInputStream ais = AudioSystem.getAudioInputStream(new File("./game_engine/assets/" + soundPath));
+				AudioInputStream ais = AudioSystem.getAudioInputStream(new File(assetsFolder + soundPath));
 				sound.open(ais);
 				
 				loadedSounds.put(soundPath, sound);
