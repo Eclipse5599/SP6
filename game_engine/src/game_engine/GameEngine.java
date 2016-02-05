@@ -30,11 +30,11 @@ public class GameEngine {
 	}
 	
 	void initialize() {
-		input = new InputHandler();
-		loader = new Loader();
-		physics = new PhysicsEngine();
-		renderer = new Renderer();
-		sounds = new SoundEngine();
+		input = InputHandler.getInstance();
+		loader = Loader.getInstance();
+		physics = PhysicsEngine.getInstance();
+		renderer = Renderer.getInstance();
+		sounds = SoundEngine.getInstance();
 		
 		frame.add(renderer);
 		frame.addKeyListener(input);

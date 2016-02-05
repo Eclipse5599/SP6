@@ -4,4 +4,15 @@ package game_engine;
 
 public class SoundEngine {
 
+	private SoundEngine () {
+		
+	}
+	
+	public static SoundEngine getInstance () {
+		if (Constants.theSoundEngine == null) {
+			Constants.theSoundEngine = new SoundEngine();
+		}
+		return Constants.theSoundEngine;
+	}
+	
 }

@@ -11,15 +11,15 @@ public class TestGame {
 		GameEngine g = new GameEngine();
 		g.initialize();
 		
-		GameObject testObject = new GameObject(g, "Player" ,20, 20, true, true); //Create a GameObject at coordinate (0, 0), is static and is collideable.
+		GameObject testObject = new GameObject(g, "Player" ,20, 20); //Create a GameObject at coordinate (0, 0), is static and is collideable.
 		
-		testObject.addComponent(new Graphic(null));
+		testObject.addComponent(new Graphic("test_image.gif"));
 		Physics physics = new Physics(1.0f);
 		testObject.addComponent(physics);
 		testObject.addComponent(new GameObjectController(physics));
 		
 		
-		GameObject testObject2 = new GameObject(g, "Player2" ,520, 520, true, true); //Create a GameObject at coordinate (0, 0), is static and is collideable.
+		GameObject testObject2 = new GameObject(g, "Player2" ,520, 520); //Create a GameObject at coordinate (0, 0), is static and is collideable.
 		
 		testObject2.addComponent(new Graphic("test_image.gif"));
 		Physics physics2 = new Physics(1.0f);

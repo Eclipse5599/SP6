@@ -4,37 +4,63 @@ import java.awt.image.BufferedImage;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 //Loads files and assets as necessary
 
 public class Loader {
-	public Loader () {
+	private Map<String, BufferedImage> loadedImages = new HashMap<String, BufferedImage>();
+	private Map<String, Clip> loadedSounds = new HashMap<String, Clip>();
+	
+	private Loader () {
 		
 	}
 	
-	public static BufferedImage loadImage (String imagePath) {
-		try {
-			BufferedImage img = ImageIO.read(new File("./assets/" + imagePath));
-			return img;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}	
+	public static Loader getInstance () {
+		if (Constants.theLoader == null) {
+			Constants.theLoader = new Loader();
+		}
+		return Constants.theLoader;
 	}
 	
-	public static Clip loadSound(String soundPath) {
-		try {
-			Clip sound = AudioSystem.getClip();
-			AudioInputStream ais = AudioSystem.getAudioInputStream(new File("./game_engine/assets/" + soundPath));
-			sound.open(ais);
-			
-			return sound;
-		} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+	
+	public BufferedImage loadImage (String imagePath) {
+		if (loadedImages.containsKey(imagePath)) {
+			System.out.println("This image is already loaded.");
+			return loadedImages.get(imagePath);
+		} else {
+			try {
+				BufferedImage img = ImageIO.read(new File("./assets/" + imagePath));
+				
+				loadedImages.put(imagePath, img);
+				return img;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}	
+		}
+	}
+	
+	public Clip loadSound(String soundPath) {
+		if (loadedSounds.containsKey(soundPath)) {
+			System.out.println("This sound is already loaded.");
+			return loadedSounds.get(soundPath);
+		} else {
+			try {
+				Clip sound = AudioSystem.getClip();
+				AudioInputStream ais = AudioSystem.getAudioInputStream(new File("./game_engine/assets/" + soundPath));
+				sound.open(ais);
+				
+				loadedSounds.put(soundPath, sound);
+				return sound;
+			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
 		}
 	}
 	

@@ -12,26 +12,21 @@ public class GameObject {
 	private GameEngine gameEngine;
 	private GameObject parent;
 	private ArrayList<GameObject> children;
-	private boolean isStatic;
-	private boolean collideable;
+	private boolean isStatic = true, collideable = false;
 	private Transform transform;
 	private String name;
 	
-	public GameObject (GameEngine game, String name, GameObject parent, int x, int y, boolean isstatic, boolean iscollideable) {
+	public GameObject (GameEngine game, String name, GameObject parent, int x, int y) {
 		gameEngine = game;
 		this.name = name;
 		this.parent = parent;
 		transform = new Transform(x, y);
-		isStatic = isstatic;
-		collideable = iscollideable;
 	}
 	
-	public GameObject (GameEngine game, String name, int x, int y, boolean isstatic, boolean iscollideable) {
+	public GameObject (GameEngine game, String name, int x, int y) {
 		gameEngine = game;
 		this.name = name;
 		transform = new Transform(x, y);
-		isStatic = isstatic;
-		collideable = iscollideable;
 	}
 	
 	public void tick (float delta) {
@@ -43,6 +38,12 @@ public class GameObject {
 	public void addComponent (Component c) {
 		components.add(c);
 		c.setOwner(this);
+		if (c.getType() == Constants.ComponentType.collider) {
+			collideable = true;
+		}
+		if (c.getType() == Constants.ComponentType.physics) {
+			isStatic = false;
+		}
 	}
 	
 	public boolean hasComponent (Constants.ComponentType type) {
@@ -57,14 +58,6 @@ public class GameObject {
 	//Getters
 	public String getName () {
 		return name;
-	}
-	
-	public boolean getIsStatic () {
-		return isStatic;
-	}
-	
-	public boolean getCollideable () {
-		return collideable;
 	}
 	
 	public Component getComponent (Constants.ComponentType type) {
@@ -83,10 +76,4 @@ public class GameObject {
 	public GameEngine getEngine () {
 		return gameEngine;
 	}
-	
-	//Setters
-	public void setIsStatic (boolean isStatic) {
-		this.isStatic = isStatic;
-	}
-	
 }

@@ -16,10 +16,18 @@ public class Renderer extends JPanel {
 	private static final long serialVersionUID = -7904606405657475749L;
 	private ArrayList<Graphic> graphicComponents = new ArrayList<Graphic>();
 	
-	public Renderer() {
+	private Renderer() {
 		
 	}
 
+	public static Renderer getInstance () {
+		if (Constants.theRenderer == null) {
+			Constants.theRenderer = new Renderer();
+		}
+		return Constants.theRenderer;
+	}
+	
+	
 	public void addGraphicComponent(Graphic g) {
 		graphicComponents.add(g);
 	}

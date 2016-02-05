@@ -7,8 +7,15 @@ import java.util.ArrayList;
 public class PhysicsEngine {
 	private ArrayList<Physics> physicsComponents = new ArrayList<Physics>();
 	
-	public PhysicsEngine () {
+	private PhysicsEngine () {
 		
+	}
+	
+	public static PhysicsEngine getInstance () {
+		if (Constants.thePhysicsEngine == null) {
+			Constants.thePhysicsEngine = new PhysicsEngine();
+		}
+		return Constants.thePhysicsEngine;
 	}
 	
 	public boolean doPhysics (float delta) {

@@ -33,6 +33,10 @@ public class Physics extends Component {
 	@Override
 	public void tick (float delta) {
 		//Vertical
+		if (moveUp && moveDown) {
+			moveUp = false;
+			moveDown = false;
+		}
 		if (moveUp) {
 			yVelocity -= acceleration*delta;
 		}
@@ -41,6 +45,10 @@ public class Physics extends Component {
 		}
 		
 		//Horizontal
+		if (moveRight && moveLeft) {
+			moveRight = false;
+			moveLeft = false;
+		}
 		if (moveRight) {
 			xVelocity += acceleration*delta;
 		}
