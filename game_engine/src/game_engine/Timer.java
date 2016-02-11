@@ -13,6 +13,11 @@ public class Timer {
 		checkTime = startTime;
 	}
 	
+	public Timer (long millisToStartWith) {
+		startTime = System.currentTimeMillis() - millisToStartWith;
+		checkTime = startTime;
+	}
+	
 	public void reset () {
 		startTime = System.currentTimeMillis();
 	}
@@ -41,5 +46,10 @@ public class Timer {
 	public float getDeltaSeconds () {
 		float delta = (getDeltaMillis() / 1000f);
 		return delta;
+	}
+	
+	public float getRunTime () {
+		long runTime = ((System.currentTimeMillis() - startTime));
+		return runTime;
 	}
 }

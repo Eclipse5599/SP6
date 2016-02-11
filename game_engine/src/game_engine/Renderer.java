@@ -43,7 +43,7 @@ public class Renderer extends JPanel {
 				g.drawImage(sprite, (int)temp.getX(), (int)temp.getY(), null);
 			} else {
 				g.setColor(Color.red);
-				g.fillRect((int)temp.getX(), (int)temp.getY(), 32, 32);
+				g.fillRect((int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() + graphic.getHeight()/2, graphic.getWidth(), graphic.getHeight());
 			}
 		}
 	}

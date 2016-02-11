@@ -6,6 +6,7 @@ package game_engine;
 
 public final class Constants {
 	public static enum ComponentType{graphic, physics, sound, controller, collider};
+	public static enum Event{collision};
 	
 	public static GameEngine theGameEngine = null;
 	public static InputHandler theInputHandler = null;

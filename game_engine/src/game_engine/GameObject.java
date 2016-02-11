@@ -39,6 +39,15 @@ public class GameObject {
 		c.setOwner(this);
 	}
 	
+	public void doEvent (Constants.Event event) {
+		if (hasComponent(Constants.ComponentType.sound)) {
+			Sound soundComponent = (Sound) getComponent(Constants.ComponentType.sound);
+			if (event == Constants.Event.collision) {
+				Constants.theSoundEngine.playSound(soundComponent.getEventSound(Constants.Event.collision));
+			}
+		}
+	}
+	
 	public boolean hasComponent (Constants.ComponentType type) {
 		for (Component comp : components) {
 			if (comp.getType() == type) {

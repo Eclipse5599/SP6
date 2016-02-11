@@ -4,6 +4,8 @@ package game_engine;
 
 import javax.swing.*;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 //import java.awt.event.*;
 import java.util.List;
@@ -23,9 +25,12 @@ public class GameEngine {
 	private final int frames = 60;
 	private Timer deltaTimer = new Timer();
 	
-	public GameEngine() {
-		frame.setSize(600, 600);
+	public GameEngine(int w, int h) {
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setSize(w, h);
+		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);		
 		frame.setVisible(true);
 	}
 	
@@ -77,6 +82,9 @@ public class GameEngine {
 		}
 		if (g.hasComponent(Constants.ComponentType.physics)) {
 			physics.addPhysicsComponent(((Physics)g.getComponent(Constants.ComponentType.physics)));
+		} 
+		if (g.hasComponent(Constants.ComponentType.collider)) {
+			physics.addColliderComponent(((Collider)g.getComponent(Constants.ComponentType.collider)));
 		} 
 	}
 	

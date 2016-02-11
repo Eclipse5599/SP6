@@ -8,7 +8,9 @@ public class Physics extends Component {
 	private float maxVelocity, minVelocity;
 	private float acceleration = 10f;
 	private static float absoluteMaxVelocity = 100;
-	private boolean moveUp = false, moveRight = false, moveDown = false, moveLeft = false; 
+	private boolean moveUp = false, moveRight = false, moveDown = false, moveLeft = false, grounded = false; 
+	private long jumpDuration = 1000;
+	private Timer jumpTimer = new Timer(jumpDuration); 
 	
 	
 	//TODO: Hastigheter åt två motsatta håll tar ej ut varandra.
@@ -19,7 +21,7 @@ public class Physics extends Component {
 		maxVelocity = absoluteMaxVelocity/mass;
 		minVelocity = -maxVelocity; 
 		
-		acceleration  = maxVelocity;
+		acceleration  = maxVelocity*2;
 		
 		if (maxVelocity < 1) {
 			maxVelocity = 1; 
@@ -37,8 +39,9 @@ public class Physics extends Component {
 			moveUp = false;
 			moveDown = false;
 		}
-		if (moveUp) {
-			yVelocity -= acceleration*delta;
+		if (moveUp || isJumping()) {
+			moveUp = true;
+			yVelocity -= acceleration*5*delta;
 		}
 		if (moveDown) {
 			yVelocity += acceleration*delta;
@@ -99,7 +102,13 @@ public class Physics extends Component {
 	}
 	
 	public void moveUp () {
-		moveUp = true;
+		if (grounded || isJumping()) {
+			if (grounded) {
+				grounded = false;
+				jumpTimer.reset();
+			}
+			moveUp = true;
+		}
 	}
 	
 	public void moveRight () {
@@ -120,51 +129,19 @@ public class Physics extends Component {
 	public float getYVelocity () {
 		return yVelocity;
 	}
+	
+	public float getMass () {
+		return mass;
+	}
+
+	public void setGrounded(boolean grounded) {
+		this.grounded = grounded;
+	}
+	
+	public boolean isJumping () {
+		if (jumpTimer.getRunTime() < jumpDuration) {
+			return true;
+		}
+		return false;
+	}
 }
-
-//Old code
-
-//@Override
-//public void tick (float delta) {
-//	//Slow down
-//	if (yVelocity != 0) {
-//		yVelocity /= 2;
-//	}
-//	if ((yVelocity < 0.001 && yVelocity > 0) || (yVelocity > -0.001 && yVelocity < 0)){
-//		yVelocity = 0;
-//	}
-//	
-//	if (xVelocity != 0) {
-//		xVelocity /= 2;
-//	}
-//	if ((xVelocity < 0.001 && xVelocity > 0) || (xVelocity > -0.001 && xVelocity < 0)){
-//		xVelocity = 0;
-//	}
-//}
-//
-//public void moveUp (float delta) {
-//	yVelocity -= acceleration;
-//	if (yVelocity < minVelocity){
-//		yVelocity = minVelocity;
-//	}
-//}
-//
-//public void moveRight (float delta) {
-//	xVelocity += acceleration;
-//	if (xVelocity < maxVelocity){
-//		xVelocity = maxVelocity;
-//	}
-//}
-//
-//public void moveDown (float delta) {
-//	yVelocity += acceleration;
-//	if (yVelocity < maxVelocity){
-//		yVelocity = maxVelocity;
-//	}
-//}
-//public void moveLeft (float delta) {
-//	xVelocity -= acceleration;
-//	if (xVelocity < minVelocity){
-//		xVelocity = minVelocity;
-//	}
-//}

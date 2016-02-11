@@ -1,5 +1,7 @@
 package game_engine;
 
+import javax.sound.sampled.Clip;
+
 //Loads and plays sounds
 
 public class SoundEngine {
@@ -13,6 +15,10 @@ public class SoundEngine {
 			Constants.theSoundEngine = new SoundEngine();
 		}
 		return Constants.theSoundEngine;
+	}
+
+	public void playSound(Clip eventSound) {
+		
 	}
 	
 }

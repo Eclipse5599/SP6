@@ -6,9 +6,13 @@ import java.awt.image.BufferedImage;
 
 public class Graphic extends Component {
 	private BufferedImage sprite;
+	private int height, width;
 	
-	public Graphic (String imagePath) {
+	public Graphic (String imagePath, int height, int width) {
 		compType = Constants.ComponentType.graphic;
+		this.height = height;
+		this.width = width;
+		
 		if (imagePath != null) {
 			sprite = Constants.theLoader.loadImage(imagePath);
 		}
@@ -16,5 +20,13 @@ public class Graphic extends Component {
 	
 	public BufferedImage getSprite() {
 		return sprite;
+	}
+	
+	public int getHeight () {
+		return height;
+	}
+	
+	public int getWidth () {
+		return width;
 	}
 }
