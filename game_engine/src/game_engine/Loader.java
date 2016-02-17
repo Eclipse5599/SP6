@@ -46,24 +46,25 @@ public class Loader {
 		}
 	}
 	
-	public Clip loadSound(String soundPath) {
-		if (loadedSounds.containsKey(soundPath)) {
-			System.out.println("This sound is already loaded.");
-			return loadedSounds.get(soundPath);
-		} else {
-			try {
-				Clip sound = AudioSystem.getClip();
-				AudioInputStream ais = AudioSystem.getAudioInputStream(new File(assetsFolder + soundPath));
-				sound.open(ais);
-				
-				loadedSounds.put(soundPath, sound);
-				return sound;
-			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
-			}
-		}
+	public File loadSound(String soundPath) {
+		return new File(assetsFolder + soundPath);
+//		if (loadedSounds.containsKey(soundPath)) {
+//			System.out.println("This sound is already loaded.");
+//			return loadedSounds.get(soundPath);
+//		} else {
+//			try {
+//				Clip sound = AudioSystem.getClip();
+//				AudioInputStream ais = AudioSystem.getAudioInputStream(new File(assetsFolder + soundPath));
+//				sound.open(ais);
+//				
+//				loadedSounds.put(soundPath, sound);
+//				return sound;
+//			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				return null;
+//			}
+//		}
 	}
 	
 }

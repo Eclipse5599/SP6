@@ -42,9 +42,7 @@ public class GameObject {
 	public void doEvent (Constants.Event event) {
 		if (hasComponent(Constants.ComponentType.sound)) {
 			Sound soundComponent = (Sound) getComponent(Constants.ComponentType.sound);
-			if (event == Constants.Event.collision) {
-				Constants.theSoundEngine.playSound(soundComponent.getEventSound(Constants.Event.collision));
-			}
+			Constants.theSoundEngine.playSound(soundComponent.getEventSound(event));
 		}
 	}
 	

@@ -30,18 +30,34 @@ public class Collider extends Component {
 	
 	public boolean xCollide (float xMov, Collider other) {
 		if (other != this) {
-			return xIntersect(xMov, other);
+			if (xIntersect(xMov, other)) {
+				owner.doEvent(Constants.Event.collision);
+				return true;
+			}
+			
 		}
 		return false;
 	}
 	public boolean yCollide (float yMov, Collider other) {
 		if (other != this) {
-			return yIntersect(yMov, other);
+			boolean wasGrounded = physics.isGrounded();
+			if (yIntersect(yMov, other)) {
+				if (!wasGrounded && yMov > 0) {
+					owner.doEvent(Constants.Event.collision);
+				} else if (yMov < 0) {
+					owner.doEvent(Constants.Event.collision);
+				}
+				return true;
+			}
 		}
 		return false;
 	}
 	
 	private boolean yIntersect (float yMov, Collider other) {
+		if (physics != null && yMov < 0) {
+			physics.setGrounded(false);
+		}
+		
 		if (colType == ColliderType.circle && other.getColType() == ColliderType.circle) {	
 			Transform otr = other.getTransform();
 			float xDist = Math.abs(getTransform().getX() - otr.getX());

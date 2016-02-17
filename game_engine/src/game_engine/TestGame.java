@@ -18,6 +18,7 @@ public class TestGame {
 		testObject.addComponent(physics);
 		testObject.addComponent(new Collider(32, 32));
 		testObject.addComponent(new GameObjectController(physics));
+		testObject.addComponent(new Sound ("test_sound.wav", Constants.Event.collision));
 		
 		
 		GameObject testObject2 = new GameObject(g, "Player2" ,520, 500); //Create a GameObject at coordinate (0, 0), is static and is collideable.
@@ -27,16 +28,22 @@ public class TestGame {
 		testObject2.addComponent(physics2);
 		testObject2.addComponent(new Collider(32, 32));
 		testObject2.addComponent(new GameObjectController(physics2, KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_A));
+		testObject2.addComponent(new Sound ("test_sound.wav", Constants.Event.collision));
 		
 		GameObject floor = new GameObject(g, "floor", 300, 545);
-		floor.addComponent(new Graphic("kjh.jpg", 20, 600));
+		floor.addComponent(new Graphic(null, 20, 600));
 		floor.addComponent(new Collider(20, 600));
+		
+		GameObject roof = new GameObject(g, "roof", 300, 450);
+		roof.addComponent(new Graphic(null, 20, 50));
+		roof.addComponent(new Collider(20, 50));
 		
 //		Clip clip = Loader.loadSound("test_sound.wav");
 //		clip.start();
 		g.addObject(testObject);
 		g.addObject(testObject2);
 		g.addObject(floor);
+		g.addObject(roof);
 		g.gameLoop();
 	}
 

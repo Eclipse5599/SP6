@@ -1,5 +1,6 @@
 package game_engine;
 
+import java.io.File;
 import java.util.HashMap;
 
 import javax.sound.sampled.Clip;
@@ -11,9 +12,17 @@ import game_engine.Constants.Event;
 
 public class Sound extends Component {
 	double volume = 1;
-	HashMap<Event, Clip> eventClips;
+	HashMap<Event, File> eventClips = new HashMap<Event, File>();
 	
-	public Clip getEventSound(Event collision) {
-		return null;
+	public Sound (String path, Event event) {
+		compType = Constants.ComponentType.sound;
+		File temp = Constants.theLoader.loadSound(path);
+		if (temp != null) {
+			eventClips.put(event, temp);
+		}
+	}
+	
+	public File getEventSound(Event event) {
+		return eventClips.get(event);
 	}
 }

@@ -104,7 +104,7 @@ public class Physics extends Component {
 	public void moveUp () {
 		if (grounded || isJumping()) {
 			if (grounded) {
-				grounded = false;
+//				grounded = false;
 				jumpTimer.reset();
 			}
 			moveUp = true;
@@ -136,6 +136,10 @@ public class Physics extends Component {
 
 	public void setGrounded(boolean grounded) {
 		this.grounded = grounded;
+	}
+	
+	public boolean isGrounded() {
+		return grounded;
 	}
 	
 	public boolean isJumping () {
