@@ -17,10 +17,16 @@ public class Transform extends Component {
 	}
 
 	public float getX() {
+		if (owner.hasParent()) {
+			return owner.getParent().getTransform().x + x;
+		} 
 		return x;
 	}
 	
 	public float getY() {
+		if (owner.hasParent()) {
+			return owner.getParent().getTransform().y + y;
+		} 
 		return y;
 	}
 
@@ -35,6 +41,19 @@ public class Transform extends Component {
 	public void setY(float y) {
 		this.y = y;
 	}
+	
+//	public void moveWithParent (float x, float y) {
+//		this.x = this.x + x;
+//		this.y = this.y + y; 
+//	}
+//	
+//	public void updateChildrenPos (float x, float y) {
+//		if (owner.hasChildren()) {
+//			for (GameObject child : owner.getChildren()) {
+//				child.getTransform().moveWithParent(x, y);
+//			}
+//		}
+//	}
 
 	public void setScale(float scale) {
 		this.scale = scale;

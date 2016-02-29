@@ -1,11 +1,13 @@
 package game_engine;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameObjectController extends Component {
 	
 	private int up = KeyEvent.VK_UP, right = KeyEvent.VK_RIGHT, down = KeyEvent.VK_DOWN, left = KeyEvent.VK_LEFT; //keycodes
 	private ArrayList<Integer> input = new ArrayList<Integer>();
+	private HashMap<Integer, Action> actionKeys = new HashMap<Integer, Action>(); 
 	private Physics physicsComponent;
 	
 	public GameObjectController (Physics physicsComponent) {
@@ -36,6 +38,11 @@ public class GameObjectController extends Component {
 			if (input.contains(left)) {
 				physicsComponent.moveLeft();
 			}
+			for (Integer aInput : input) {
+				if (actionKeys.containsKey(aInput)) {
+					actionKeys.get(aInput).doAction();
+				}
+			}
 		}
 	}
 	
@@ -49,5 +56,9 @@ public class GameObjectController extends Component {
 		if (input.contains(pressedKey)) {
 			input.remove(pressedKey);
 		}
+	}
+
+	public void addActionKey(int actionKey, Action a) {
+		
 	}
 }

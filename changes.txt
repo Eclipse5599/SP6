@@ -1,0 +1,5 @@
+Fixade ett fel i renderingen.
+Fixade metoder i TestGame för att skapa object.
+Fixade möjlighet för object att ha barn.
+Fixade problem i collider.
+La till stöd för actions som triggas av knapptryckningar.

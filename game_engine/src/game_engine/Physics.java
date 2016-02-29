@@ -8,10 +8,10 @@ public class Physics extends Component {
 	private float maxVelocity, minVelocity;
 	private float acceleration = 10f;
 	private static float absoluteMaxVelocity = 100;
-	private boolean moveUp = false, moveRight = false, moveDown = false, moveLeft = false, grounded = false; 
+	private boolean moveUp = false, moveRight = false, moveDown = false, moveLeft = false, grounded = false, jumpEnabled = true; 
 	private long jumpDuration = 1000;
 	private Timer jumpTimer = new Timer(jumpDuration); 
-	
+	private Physics parentPhysics;
 	
 	//TODO: Hastigheter åt två motsatta håll tar ej ut varandra.
 	//TODO: Accelerationer upp/vänster är långsammare än accelerationen åt höger/ner.
@@ -102,8 +102,8 @@ public class Physics extends Component {
 	}
 	
 	public void moveUp () {
-		if (grounded || isJumping()) {
-			if (grounded) {
+		if (grounded || isJumping() || !jumpEnabled) {
+			if (grounded && jumpEnabled) {
 //				grounded = false;
 				jumpTimer.reset();
 			}
@@ -134,8 +134,20 @@ public class Physics extends Component {
 		return mass;
 	}
 
+	public boolean getJumpEnabled () {
+		return jumpEnabled;
+	}
+	
+	public Physics getParentPhysics () {
+		return parentPhysics;
+	}
+	
 	public void setGrounded(boolean grounded) {
 		this.grounded = grounded;
+	}
+	
+	public void setJumpEnabled (boolean state) {
+		jumpEnabled = state;
 	}
 	
 	public boolean isGrounded() {
@@ -147,5 +159,16 @@ public class Physics extends Component {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void setHasParent (boolean state) {
+		hasParent = state;
+		if (hasParent) {
+			GameObject parent = owner.getParent();
+			if (parent.hasComponent(compType)) {
+				parentPhysics = (Physics)parent.getComponent(compType);
+			}
+		}
 	}
 }

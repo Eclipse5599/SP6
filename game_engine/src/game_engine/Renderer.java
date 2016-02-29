@@ -39,11 +39,11 @@ public class Renderer extends JPanel {
 			Image sprite = graphic.getSprite();
 			Transform temp = graphic.getOwnerTransform();
 			if (sprite != null) {
-				//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer)
-				g.drawImage(sprite, (int)temp.getX(), (int)temp.getY(), null);
+				//g.drawImage(sprite, (int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() + graphic.getHeight()/2, (int)temp.getX() + graphic.getWidth()/2, (int)temp.getY() - graphic.getHeight()/2, 0, 0, graphic.getWidth(), graphic.getHeight(), null);
+				g.drawImage(sprite, (int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() - graphic.getHeight()/2, null);
 			} else {
 				g.setColor(Color.red);
-				g.fillRect((int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() + graphic.getHeight()/2, graphic.getWidth(), graphic.getHeight());
+				g.fillRect((int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() - graphic.getHeight()/2, graphic.getWidth(), graphic.getHeight());
 			}
 		}
 	}

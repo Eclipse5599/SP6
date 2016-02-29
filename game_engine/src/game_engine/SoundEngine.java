@@ -25,7 +25,7 @@ public class SoundEngine {
 	}
 	
 	public void addBackgroundSound (String path) {
-		File backgroundSound = Constants.theLoader.loadSound(path);
+		final File backgroundSound = Constants.theLoader.loadSound(path);
 		if (backgroundSound !=  null) {
 			Thread temp = new Thread(new Runnable () {
 				public void run() {
@@ -44,7 +44,7 @@ public class SoundEngine {
 		}
 	}
 
-	public void playSound(File eventSound) {
+	public void playSound(final File eventSound) {
 		if (eventSound != null && timer.getRunTime() > 200) {
 			timer.reset();
 			Thread temp = new Thread(new Runnable () {

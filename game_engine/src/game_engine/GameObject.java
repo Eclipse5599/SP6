@@ -9,23 +9,22 @@ import java.util.List;
 public class GameObject {
 	List<Component> components = new ArrayList<Component>();
 	
-	private GameEngine gameEngine;
-	private GameObject parent;
-	private ArrayList<GameObject> children;
+	private GameObject parent = null;
+	private ArrayList<GameObject> children = new ArrayList<GameObject>();
 	private Transform transform;
 	private String name;
 	
-	public GameObject (GameEngine game, String name, GameObject parent, int x, int y) {
-		gameEngine = game;
+	public GameObject (String name, GameObject parent, int x, int y) {
 		this.name = name;
 		this.parent = parent;
 		transform = new Transform(x, y);
+		transform.setOwner(this);
 	}
 	
-	public GameObject (GameEngine game, String name, int x, int y) {
-		gameEngine = game;
+	public GameObject (String name, int x, int y) {
 		this.name = name;
 		transform = new Transform(x, y);
+		transform.setOwner(this);
 	}
 	
 	public void tick (float delta) {
@@ -37,6 +36,18 @@ public class GameObject {
 	public void addComponent (Component c) {
 		components.add(c);
 		c.setOwner(this);
+	}
+	
+	public void addAction (int actionKey, Action a) {
+		if (hasComponent(Constants.ComponentType.controller)) {
+			GameObjectController control = (GameObjectController)getComponent(Constants.ComponentType.controller);
+			control.addActionKey(actionKey, a);
+		}
+	}
+	
+	public void addChild (GameObject g) {
+		children.add(g);
+		g.setParent(this);
 	}
 	
 	public void doEvent (Constants.Event event) {
@@ -51,6 +62,17 @@ public class GameObject {
 			if (comp.getType() == type) {
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	public boolean hasChildren () {
+		return !children.isEmpty();
+	}
+	
+	public boolean hasParent () {
+		if (parent != null) {
+			return true;
 		}
 		return false;
 	}
@@ -73,7 +95,18 @@ public class GameObject {
 		return transform;
 	}
 	
-	public GameEngine getEngine () {
-		return gameEngine;
+	public List<GameObject> getChildren () {
+		return children;
+	}
+	
+	public GameObject getParent () {
+		return parent;
+	}
+	
+	public void setParent (GameObject parent) {
+		this.parent = parent;
+		for (Component c : components) {
+			c.setHasParent(true);
+		}
 	}
 }

@@ -6,6 +6,7 @@ public abstract class Component {
 
 	protected GameObject owner;
 	protected Constants.ComponentType compType;
+	protected boolean hasParent;
 	
 	public void tick(float delta) {
 		
@@ -23,5 +24,7 @@ public abstract class Component {
 		this.owner = owner;
 	}
 	
-	
+	public void setHasParent (boolean state) {
+		hasParent = state;
+	}
 }

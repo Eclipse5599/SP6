@@ -34,7 +34,7 @@ public class GameEngine {
 		frame.setVisible(true);
 	}
 	
-	void initialize() {
+	public void initialize() {
 		input = InputHandler.getInstance();
 		loader = Loader.getInstance();
 		physics = PhysicsEngine.getInstance();
@@ -46,7 +46,7 @@ public class GameEngine {
 		frame.setFocusable(true);
 	}
 	
-	void gameLoop() {
+	public void gameLoop() {
 		frame.revalidate();
 		frame.repaint();
 		while (!exit) {
@@ -72,7 +72,7 @@ public class GameEngine {
 		}
 	}
 	
-	void addObject(GameObject g) {
+	public void addObject(GameObject g) {
 		gameobjects.add(g);
 		if (g.hasComponent(Constants.ComponentType.graphic)) {
 			renderer.addGraphicComponent((Graphic)g.getComponent(Constants.ComponentType.graphic));
@@ -86,9 +86,14 @@ public class GameEngine {
 		if (g.hasComponent(Constants.ComponentType.collider)) {
 			physics.addColliderComponent(((Collider)g.getComponent(Constants.ComponentType.collider)));
 		} 
+		if (g.hasChildren()) {
+			for (GameObject child : g.getChildren()) {
+				addObject(child);
+			}
+		}
 	}
 	
-	public Loader getLoader () {
-		return loader;
+	public void setGravityType (Constants.GravityType gravType) {
+		physics.setGravType(gravType);
 	}
 }

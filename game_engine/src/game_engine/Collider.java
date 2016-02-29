@@ -7,6 +7,9 @@ public class Collider extends Component {
 	private int height, width;
 	public ColliderType colType;
 	public static enum ColliderType{circle, rectangle};
+	private boolean northCollided = false, eastCollided = false, southCollided = false, westCollided = false;
+	private Collider parentCollider = null;
+	private boolean parentHasCollider = true;
 	
 	public Collider (Graphic g) {
 		compType = Constants.ComponentType.collider;
@@ -29,67 +32,24 @@ public class Collider extends Component {
 	}
 	
 	public boolean xCollide (float xMov, Collider other) {
-		if (other != this) {
+		if (other != this && (!other.owner.hasParent() || other.owner.getParent() != this.owner)) {
 			if (xIntersect(xMov, other)) {
 				owner.doEvent(Constants.Event.collision);
 				return true;
 			}
-			
 		}
 		return false;
 	}
 	public boolean yCollide (float yMov, Collider other) {
-		if (other != this) {
+		if (other != this && (!other.owner.hasParent() || other.owner.getParent() != this.owner)) {
 			boolean wasGrounded = physics.isGrounded();
 			if (yIntersect(yMov, other)) {
-				if (!wasGrounded && yMov > 0) {
+				if ((!wasGrounded || !physics.getJumpEnabled()) && yMov > 0) {
 					owner.doEvent(Constants.Event.collision);
 				} else if (yMov < 0) {
 					owner.doEvent(Constants.Event.collision);
 				}
 				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean yIntersect (float yMov, Collider other) {
-		if (physics != null && yMov < 0) {
-			physics.setGrounded(false);
-		}
-		
-		if (colType == ColliderType.circle && other.getColType() == ColliderType.circle) {	
-			Transform otr = other.getTransform();
-			float xDist = Math.abs(getTransform().getX() - otr.getX());
-			float yDist = Math.abs(getTransform().getY() + yMov - otr.getY());
-			
-			double dist = Math.sqrt(xDist * xDist + yDist * yDist);
-			System.out.println("Distance: " + dist);
-			if ((radius + other.getRadius()) > dist) {
-				return true;
-			}
-			return false;
-		} else if (colType == ColliderType.rectangle && other.getColType() == ColliderType.rectangle) {
-			//uy = upperY, ly = lowerY, lx = leftX, rx = rightX
-			Transform t = getTransform();
-			float uy = t.getY() - height/2 + yMov, ly = t.getY() + height/2 + yMov;
-			float lx = t.getX() - width/2, rx = t.getX() + width/2;
-			
-			Transform ot = other.getTransform();
-			float ouy = ot.getY() - other.getHeight()/2, oly = ot.getY() + other.getHeight()/2;
-			float olx = ot.getX() - other.getWidth()/2, orx = ot.getX() + other.getWidth()/2;
-			
-			if (uy <= oly && uy >= ouy){ //Collided with head
-				if ((rx <= orx && rx >= olx) || (lx <= orx && lx >= olx)) {
-					return true;					
-				}
-			} else if (ly <= oly && ly >= ouy) { //Collided with feet
-				if ((rx <= orx && rx >= olx) || (lx <= orx && lx >= olx)) {
-					if (physics != null) {
-						physics.setGrounded(true);
-					}
-					return true;					
-				}
 			}
 		}
 		return false;
@@ -119,20 +79,95 @@ public class Collider extends Component {
 			float ouy = ot.getY() - other.getHeight()/2, oly = ot.getY() + other.getHeight()/2;
 			float olx = ot.getX() - other.getWidth()/2, orx = ot.getX() + other.getWidth()/2;
 			
+			if (rx <= orx && rx >= olx) { //collided with right side
+				if ((uy <= oly && uy >= ouy) || (ly <= oly && ly >= ouy)) {
+					other.setWestCollided(true);
+					setEastCollided(true);
+					return true;
+				}else if ((ouy <= ly && ouy >= uy) || (oly <= ly && oly >= uy)) {
+					other.setWestCollided(true);
+					setEastCollided(true);
+					return true;
+				}
+			} else if (lx <= orx && lx >= olx) {//collided with left side
+				if ((uy <= oly && uy >= ouy) || (ly <= oly && ly >= ouy)) {
+					other.setEastCollided(true);
+					setWestCollided(true);
+					return true;
+				}else if ((ouy <= ly && ouy >= uy) || (oly <= ly && oly >= uy)) {
+					other.setEastCollided(true);
+					setWestCollided(true);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	private boolean yIntersect (float yMov, Collider other) {
+		if (physics != null && yMov < 0) {
+			physics.setGrounded(false);
+		}
+		
+		if (colType == ColliderType.circle && other.getColType() == ColliderType.circle) {	
+			Transform otr = other.getTransform();
+			float xDist = Math.abs(getTransform().getX() - otr.getX());
+			float yDist = Math.abs(getTransform().getY() + yMov - otr.getY());
+			
+			double dist = Math.sqrt(xDist * xDist + yDist * yDist);
+			System.out.println("Distance: " + dist);
+			if ((radius + other.getRadius()) > dist) {
+				return true;
+			}
+			return false;
+		} else if (colType == ColliderType.rectangle && other.getColType() == ColliderType.rectangle) {
+			//uy = upperY, ly = lowerY, lx = leftX, rx = rightX
+			Transform t = getTransform();
+			float uy = t.getY() - height/2 + yMov, ly = t.getY() + height/2 + yMov;
+			float lx = t.getX() - width/2, rx = t.getX() + width/2;
+			
+			Transform ot = other.getTransform();
+			float ouy = ot.getY() - other.getHeight()/2, oly = ot.getY() + other.getHeight()/2;
+			float olx = ot.getX() - other.getWidth()/2, orx = ot.getX() + other.getWidth()/2;
+			
 			if (uy <= oly && uy >= ouy){ //Collided with head
 				if ((rx <= orx && rx >= olx) || (lx <= orx && lx >= olx)) {
+					other.setSouthCollided(true);
+					setNorthCollided(true);
+					return true;					
+				} else if ((orx <= rx && orx >= lx) || (olx <= rx && olx >= lx)) {
+					other.setSouthCollided(true);
+					setNorthCollided(true);
 					return true;					
 				}
 			} else if (ly <= oly && ly >= ouy) { //Collided with feet
 				if ((rx <= orx && rx >= olx) || (lx <= orx && lx >= olx)) {
-					if (physics != null) {
-						physics.setGrounded(true);
-					}
+					other.setNorthCollided(true);
+					setSouthCollided(true);
+					return true;					
+				}else if ((orx <= rx && orx >= lx) || (olx <= rx && olx >= lx)) {
+					other.setNorthCollided(true);
+					setSouthCollided(true);
 					return true;					
 				}
 			}
 		}
 		return false;
+	}
+	
+	public void resetCollided () {
+		setNorthCollided(false);
+		setEastCollided(false);
+		setSouthCollided(false);
+		setWestCollided(false);
+	}
+	
+	public void updateParentCollider () {
+		if (hasParent && parentHasCollider) {
+			parentCollider.setNorthCollided(northCollided);
+			parentCollider.setEastCollided(eastCollided);
+			parentCollider.setSouthCollided(southCollided);
+			parentCollider.setWestCollided(westCollided);
+		}
 	}
 	
 	public final Transform getTransform () {
@@ -155,11 +190,54 @@ public class Collider extends Component {
 		return width;
 	}
 	
+	public boolean getNorthCollided () {
+		return northCollided;
+	}
+	public boolean getEastCollided () {
+		return eastCollided;
+	}
+	public boolean getSouthCollided () {
+		return southCollided;
+	}
+	public boolean getWestCollided () {
+		return westCollided;
+	}
+	
 	@Override
-	public void setOwner(GameObject owner) {
+	public void setOwner (GameObject owner) {
 		this.owner = owner;
 		if (owner.hasComponent(Constants.ComponentType.physics)) {
 			physics = (Physics)owner.getComponent(Constants.ComponentType.physics);
+		}
+	}
+	
+	public void setNorthCollided (boolean status) {
+		northCollided = status;
+		updateParentCollider();
+	}
+	public void setEastCollided (boolean status) {
+		eastCollided = status;
+		updateParentCollider();
+	}
+	public void setSouthCollided (boolean status) {
+		southCollided = status;
+		updateParentCollider();
+	}
+	public void setWestCollided (boolean status) {
+		westCollided = status;
+		updateParentCollider();
+	}
+	
+	@Override
+	public void setHasParent (boolean state) {
+		hasParent = state;
+		if (hasParent) {
+			GameObject parent = owner.getParent();
+			if (parent.hasComponent(compType)) {
+				parentCollider = (Collider)parent.getComponent(compType);
+			} else {
+				parentHasCollider = false;
+			}
 		}
 	}
 }
