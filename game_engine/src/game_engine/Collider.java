@@ -35,6 +35,7 @@ public class Collider extends Component {
 		if (other != this && (!other.owner.hasParent() || other.owner.getParent() != this.owner)) {
 			if (xIntersect(xMov, other)) {
 				owner.doEvent(Constants.Event.collision);
+				owner.handleCollisionExtras(other.owner);
 				return true;
 			}
 		}
@@ -49,6 +50,7 @@ public class Collider extends Component {
 				} else if (yMov < 0) {
 					owner.doEvent(Constants.Event.collision);
 				}
+				owner.handleCollisionExtras(other.owner);
 				return true;
 			}
 		}

@@ -5,14 +5,16 @@ import java.util.ArrayList;
 //Uses Components from the component class to create objects used in the game
 
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GameObject {
-	List<Component> components = new ArrayList<Component>();
+	private ConcurrentLinkedQueue<Component> components = new ConcurrentLinkedQueue<Component>();
+	private ConcurrentLinkedQueue<GameObject> children = new ConcurrentLinkedQueue<GameObject>();
 	
 	private GameObject parent = null;
-	private ArrayList<GameObject> children = new ArrayList<GameObject>();
 	private Transform transform;
 	private String name;
+	private Constants.Direction facing = Constants.Direction.east;  
 	
 	public GameObject (String name, GameObject parent, int x, int y) {
 		this.name = name;
@@ -40,6 +42,7 @@ public class GameObject {
 	
 	public void addAction (int actionKey, Action a) {
 		if (hasComponent(Constants.ComponentType.controller)) {
+			a.setOwner(this);
 			GameObjectController control = (GameObjectController)getComponent(Constants.ComponentType.controller);
 			control.addActionKey(actionKey, a);
 		}
@@ -77,6 +80,10 @@ public class GameObject {
 		return false;
 	}
 	
+	public void handleCollisionExtras (GameObject other) {
+		
+	}
+	
 	//Getters
 	public String getName () {
 		return name;
@@ -95,12 +102,21 @@ public class GameObject {
 		return transform;
 	}
 	
-	public List<GameObject> getChildren () {
+	public ConcurrentLinkedQueue<GameObject> getChildren () {
 		return children;
 	}
 	
 	public GameObject getParent () {
 		return parent;
+	}
+	
+	public Constants.Direction getFacingDirection() {
+		return facing;
+	}
+
+	//Setters
+	public void setFacingDirection (Constants.Direction dir) {
+		facing = dir;
 	}
 	
 	public void setParent (GameObject parent) {

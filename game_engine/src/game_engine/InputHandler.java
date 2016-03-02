@@ -45,5 +45,9 @@ public class InputHandler implements KeyListener {
 		for (GameObjectController controller : controllers) {
 			controller.removeInput(key);
 		}
+	}
+
+	public void removeController(GameObjectController gameObjectController) {
+		controllers.remove(gameObjectController);
 	}	
 }

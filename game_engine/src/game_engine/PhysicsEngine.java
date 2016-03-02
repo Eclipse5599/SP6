@@ -3,12 +3,13 @@ package game_engine;
 import game_engine.Constants.GravityType;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 //Handles calculations related to physics in the game, such as gravity and force
 
 public class PhysicsEngine {
-	private ArrayList<Physics> physicsComponents = new ArrayList<Physics>();
-	private ArrayList<Collider> colliderComponents = new ArrayList<Collider>();
+	private ConcurrentLinkedQueue<Physics> physicsComponents = new ConcurrentLinkedQueue<Physics>();
+	private ConcurrentLinkedQueue<Collider> colliderComponents = new ConcurrentLinkedQueue<Collider>();
 	
 	private GravityType gravType = GravityType.world;
 	private float gravitationalForce = 50f; 
@@ -31,7 +32,7 @@ public class PhysicsEngine {
 			float xMovement = p.getXVelocity()*delta;
 			float yMovement = p.getYVelocity()*delta;
 			
-			if (gravType == GravityType.world) {
+			if (gravType == GravityType.world && !p.gravityException()) {
 				yMovement += p.getMass()*gravitationalForce*delta;
 			}
 			
@@ -51,7 +52,7 @@ public class PhysicsEngine {
 			float xMovement = p.getXVelocity()*delta;
 			float yMovement = p.getYVelocity()*delta;
 			
-			if (gravType == GravityType.world) {
+			if (gravType == GravityType.world && !p.gravityException()) {
 				yMovement += p.getMass()*gravitationalForce*delta;
 			}
 			
@@ -74,6 +75,9 @@ public class PhysicsEngine {
 					trans.setY(trans.getY() + yMovement);
 				}
 				col.resetCollided();
+			} else {
+				trans.setX(trans.getX() + xMovement);
+				trans.setY(trans.getY() + yMovement);
 			}
 		}
 //		}
@@ -102,5 +106,13 @@ public class PhysicsEngine {
 				p.setJumpEnabled(false);
 			}
 		}
+	}
+
+	public void removePhysicsComponent(Physics physics) {
+		physicsComponents.remove(physics);
+	}
+
+	public void removeColliderComponent(Collider collider) {
+		colliderComponents.remove(collider);
 	}
 }

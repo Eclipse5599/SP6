@@ -3,3 +3,8 @@ Fixade metoder i TestGame för att skapa object.
 Fixade möjlighet för object att ha barn.
 Fixade problem i collider.
 La till stöd för actions som triggas av knapptryckningar.
+
+Ändrade hur fönsterstorleken ställs in.
+La till så att GameObject kan hantera en kollision ytterligare.
+La till en aktion för att skjuta.
+La till en subklass till GameObject för skott.

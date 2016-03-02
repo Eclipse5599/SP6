@@ -8,7 +8,7 @@ public class Physics extends Component {
 	private float maxVelocity, minVelocity;
 	private float acceleration = 10f;
 	private static float absoluteMaxVelocity = 100;
-	private boolean moveUp = false, moveRight = false, moveDown = false, moveLeft = false, grounded = false, jumpEnabled = true; 
+	private boolean moveUp = false, moveRight = false, moveDown = false, moveLeft = false, grounded = false, jumpEnabled = true, gravityException = false; 
 	private long jumpDuration = 1000;
 	private Timer jumpTimer = new Timer(jumpDuration); 
 	private Physics parentPhysics;
@@ -95,6 +95,14 @@ public class Physics extends Component {
 			}
 		}
 		
+		if (moveUp) {
+			owner.setFacingDirection(Constants.Direction.north);
+		} else if (moveLeft) {
+			owner.setFacingDirection(Constants.Direction.west);
+		} else if (moveRight) {
+			owner.setFacingDirection(Constants.Direction.east);
+		}
+		
 		moveUp = false;
 		moveRight = false;
 		moveDown = false;
@@ -142,12 +150,28 @@ public class Physics extends Component {
 		return parentPhysics;
 	}
 	
+	public boolean gravityException() {
+		return gravityException;
+	}
+	
 	public void setGrounded(boolean grounded) {
 		this.grounded = grounded;
 	}
 	
 	public void setJumpEnabled (boolean state) {
 		jumpEnabled = state;
+	}
+	
+	public void setAcceleration (float acc) {
+		acceleration = acc;
+	}
+	public void setMaxVelocity (float maxVel) {
+		maxVelocity = maxVel;
+		minVelocity = -maxVel;
+	}
+	
+	public void setGravityException(boolean state) {
+		gravityException = state;
 	}
 	
 	public boolean isGrounded() {

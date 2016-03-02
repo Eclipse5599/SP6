@@ -38,9 +38,9 @@ public class GameObjectController extends Component {
 			if (input.contains(left)) {
 				physicsComponent.moveLeft();
 			}
-			for (Integer aInput : input) {
-				if (actionKeys.containsKey(aInput)) {
-					actionKeys.get(aInput).doAction();
+			for (Integer aActionKey : actionKeys.keySet()) {
+				if (input.contains(aActionKey)) {
+					actionKeys.get(aActionKey).doAction();
 				}
 			}
 		}
@@ -59,6 +59,8 @@ public class GameObjectController extends Component {
 	}
 
 	public void addActionKey(int actionKey, Action a) {
-		
+		if (!actionKeys.containsKey(actionKey) && !actionKeys.containsValue(a)) {
+			actionKeys.put(actionKey, a);
+		}
 	}
 }

@@ -1,24 +1,16 @@
 package game_engine;
 
-//The awesomesauce game engine making the game a game omg lol!
-
 import javax.swing.*;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-//import java.awt.event.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class GameEngine {
-	private InputHandler input;
-	private Loader loader;
-	private PhysicsEngine physics;
-	private Renderer renderer;
-	private SoundEngine sounds;
-	
+public class GameEngine {	
 	private JFrame frame = new JFrame();
-	private List<GameObject> gameobjects = new ArrayList<GameObject>();
+	private ConcurrentLinkedQueue<GameObject> gameobjects = new ConcurrentLinkedQueue<GameObject>();
 	
 	private boolean exit = false;
 	private boolean movementDetected = true;
@@ -27,23 +19,26 @@ public class GameEngine {
 	
 	public GameEngine(int w, int h) {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setSize(w, h);
+		frame.setSize(new Dimension(w, h));
 		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);		
 		frame.setVisible(true);
+		Constants.theGameEngine = this;
 	}
 	
 	public void initialize() {
-		input = InputHandler.getInstance();
-		loader = Loader.getInstance();
-		physics = PhysicsEngine.getInstance();
-		renderer = Renderer.getInstance();
-		sounds = SoundEngine.getInstance();
+		InputHandler.getInstance();
+		Loader.getInstance();
+		PhysicsEngine.getInstance();
+		Renderer.getInstance();
+		SoundEngine.getInstance();
 		
-		frame.add(renderer);
-		frame.addKeyListener(input);
+		Constants.theRenderer.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
+		frame.add(Constants.theRenderer);
+		frame.addKeyListener(Constants.theInputHandler);
 		frame.setFocusable(true);
+		frame.pack();
 	}
 	
 	public void gameLoop() {
@@ -57,7 +52,7 @@ public class GameEngine {
 				g.tick(delta);
 			}
 			
-			movementDetected = physics.doPhysics(delta);
+			movementDetected = Constants.thePhysicsEngine.doPhysics(delta);
 			if (movementDetected) {
 				movementDetected = false;
 				frame.revalidate();
@@ -75,16 +70,16 @@ public class GameEngine {
 	public void addObject(GameObject g) {
 		gameobjects.add(g);
 		if (g.hasComponent(Constants.ComponentType.graphic)) {
-			renderer.addGraphicComponent((Graphic)g.getComponent(Constants.ComponentType.graphic));
+			Constants.theRenderer.addGraphicComponent((Graphic)g.getComponent(Constants.ComponentType.graphic));
 		}
 		if (g.hasComponent(Constants.ComponentType.controller)) {
-			input.addController(((GameObjectController)g.getComponent(Constants.ComponentType.controller)));
+			Constants.theInputHandler.addController(((GameObjectController)g.getComponent(Constants.ComponentType.controller)));
 		}
 		if (g.hasComponent(Constants.ComponentType.physics)) {
-			physics.addPhysicsComponent(((Physics)g.getComponent(Constants.ComponentType.physics)));
+			Constants.thePhysicsEngine.addPhysicsComponent(((Physics)g.getComponent(Constants.ComponentType.physics)));
 		} 
 		if (g.hasComponent(Constants.ComponentType.collider)) {
-			physics.addColliderComponent(((Collider)g.getComponent(Constants.ComponentType.collider)));
+			Constants.thePhysicsEngine.addColliderComponent(((Collider)g.getComponent(Constants.ComponentType.collider)));
 		} 
 		if (g.hasChildren()) {
 			for (GameObject child : g.getChildren()) {
@@ -93,7 +88,29 @@ public class GameEngine {
 		}
 	}
 	
+	public void removeObject(GameObject g) {
+		if(gameobjects.contains(g)) {
+			if (g.hasChildren()) {
+				for (GameObject child : g.getChildren()) {
+					removeObject(child);
+				}
+			}
+			if (g.hasComponent(Constants.ComponentType.graphic)) {
+				Constants.theRenderer.removeGraphicComponent((Graphic)g.getComponent(Constants.ComponentType.graphic));
+			}
+			if (g.hasComponent(Constants.ComponentType.controller)) {
+				Constants.theInputHandler.removeController(((GameObjectController)g.getComponent(Constants.ComponentType.controller)));
+			}
+			if (g.hasComponent(Constants.ComponentType.physics)) {
+				Constants.thePhysicsEngine.removePhysicsComponent(((Physics)g.getComponent(Constants.ComponentType.physics)));
+			} 
+			if (g.hasComponent(Constants.ComponentType.collider)) {
+				Constants.thePhysicsEngine.removeColliderComponent(((Collider)g.getComponent(Constants.ComponentType.collider)));
+			} 
+		}
+	}
+	
 	public void setGravityType (Constants.GravityType gravType) {
-		physics.setGravType(gravType);
+		Constants.thePhysicsEngine.setGravType(gravType);
 	}
 }

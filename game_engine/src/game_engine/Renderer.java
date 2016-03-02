@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 //Renders graphical components to the screen
 //For later stages: decide what components to render to avoid rendering assets that can't be seen
@@ -14,7 +15,7 @@ import javax.swing.JPanel;
 public class Renderer extends JPanel {
 	
 	private static final long serialVersionUID = -7904606405657475749L;
-	private ArrayList<Graphic> graphicComponents = new ArrayList<Graphic>();
+	private ConcurrentLinkedQueue<Graphic> graphicComponents = new ConcurrentLinkedQueue<Graphic>();
 	
 	private Renderer() {
 		
@@ -39,12 +40,16 @@ public class Renderer extends JPanel {
 			Image sprite = graphic.getSprite();
 			Transform temp = graphic.getOwnerTransform();
 			if (sprite != null) {
-				//g.drawImage(sprite, (int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() + graphic.getHeight()/2, (int)temp.getX() + graphic.getWidth()/2, (int)temp.getY() - graphic.getHeight()/2, 0, 0, graphic.getWidth(), graphic.getHeight(), null);
+				//g.drawImage(sprite, (int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() - graphic.getHeight()/2, (int)temp.getX() + graphic.getWidth()/2, (int)temp.getY() + graphic.getHeight()/2, 0, 0, graphic.getWidth(), graphic.getHeight(), null);
 				g.drawImage(sprite, (int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() - graphic.getHeight()/2, null);
 			} else {
 				g.setColor(Color.red);
 				g.fillRect((int)temp.getX() - graphic.getWidth()/2, (int)temp.getY() - graphic.getHeight()/2, graphic.getWidth(), graphic.getHeight());
 			}
 		}
+	}
+
+	public void removeGraphicComponent(Graphic component) {
+		graphicComponents.remove(component);
 	}
 }
