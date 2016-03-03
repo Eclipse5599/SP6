@@ -1,12 +1,12 @@
 package game_engine;
 
-import javax.swing.*;
-
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class GameEngine {	
 	private JFrame frame = new JFrame();
@@ -14,8 +14,11 @@ public class GameEngine {
 	
 	private boolean exit = false;
 	private boolean movementDetected = true;
-	private final int frames = 60;
+	private final int FPS = 60;
+	private final long OPTIMAL_TIME = 1000000/FPS;
 	private Timer deltaTimer = new Timer();
+	private long lastLoopTime = 0;
+	private int fps = 0, lastFpsTime = 0;
 	
 	public GameEngine(int w, int h) {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -45,9 +48,11 @@ public class GameEngine {
 		frame.revalidate();
 		frame.repaint();
 		while (!exit) {
-			long deltaMillis = deltaTimer.getDeltaMillis();
-			float delta = deltaMillis/1000f;
-			//System.out.println("Seconds: " + delta + ", Millis: " + deltaMillis);
+			long now = System.currentTimeMillis();
+			long updateLength = deltaTimer.getRunTime();
+			deltaTimer.reset();
+			lastLoopTime = now;
+			float delta = updateLength/(float)OPTIMAL_TIME;
 			for(GameObject g : gameobjects) {
 				g.tick(delta);
 			}
@@ -59,12 +64,27 @@ public class GameEngine {
 				frame.repaint();
 			}
 			
+			lastFpsTime += updateLength;
+			fps++;
+			
+			if (lastFpsTime >= 1000000) {
+				lastFpsTime = 0;
+				fps = 0;
+			}
+			
 			try {
-				Thread.sleep((long) (frames*(delta)));
+				Thread.sleep((lastLoopTime - System.currentTimeMillis() + OPTIMAL_TIME)/1000000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		frame.remove(Constants.theRenderer);
+		JLabel endMessage = new JLabel("Game Ended", JLabel.CENTER);
+		endMessage.setVerticalAlignment(JLabel.CENTER);
+		endMessage.setFont(new Font(endMessage.getFont().getName(), Font.PLAIN, 50));
+		frame.add(endMessage);
+		frame.revalidate();
+		frame.repaint();
 	}
 	
 	public void addObject(GameObject g) {
@@ -90,6 +110,9 @@ public class GameEngine {
 	
 	public void removeObject(GameObject g) {
 		if(gameobjects.contains(g)) {
+			if (g.getName() == "Player" || g.getName() == "Player2") {
+				exit();
+			}
 			if (g.hasChildren()) {
 				for (GameObject child : g.getChildren()) {
 					removeObject(child);
@@ -110,7 +133,16 @@ public class GameEngine {
 		}
 	}
 	
+	public void addBackgroundSound(String path) {
+		Constants.theSoundEngine.addBackgroundSound(path);
+	}
+	
 	public void setGravityType (Constants.GravityType gravType) {
 		Constants.thePhysicsEngine.setGravType(gravType);
+	}
+	
+	public void exit () {
+		Constants.theSoundEngine.exit();
+		exit = true;
 	}
 }

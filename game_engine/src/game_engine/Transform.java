@@ -2,32 +2,30 @@ package game_engine;
 
 public class Transform extends Component {
 
-	private float x, y;
+	private Vector2 pos;
 	private float scale;
 	
 	public Transform (int x, int y) {
-		this.x = x;
-		this.y = y;
+		pos = new Vector2(x, y);
 	}
 	
 	public Transform (int x, int y, float scale) {
-		this.x = x;
-		this.y = y;
+		pos = new Vector2(x, y);
 		this.scale = scale;
 	}
 
 	public float getX() {
 		if (owner.hasParent()) {
-			return owner.getParent().getTransform().x + x;
+			return owner.getParent().getTransform().getX() + pos.getX();
 		} 
-		return x;
+		return pos.getX();
 	}
 	
 	public float getY() {
 		if (owner.hasParent()) {
-			return owner.getParent().getTransform().y + y;
+			return owner.getParent().getTransform().getY() + pos.getY();
 		} 
-		return y;
+		return pos.getY();
 	}
 
 	public float getScale() {
@@ -35,25 +33,12 @@ public class Transform extends Component {
 	}
 	
 	public void setX(float x) {
-		this.x = x;
+		pos.setX(x);
 	}
 
 	public void setY(float y) {
-		this.y = y;
+		pos.setY(y);
 	}
-	
-//	public void moveWithParent (float x, float y) {
-//		this.x = this.x + x;
-//		this.y = this.y + y; 
-//	}
-//	
-//	public void updateChildrenPos (float x, float y) {
-//		if (owner.hasChildren()) {
-//			for (GameObject child : owner.getChildren()) {
-//				child.getTransform().moveWithParent(x, y);
-//			}
-//		}
-//	}
 
 	public void setScale(float scale) {
 		this.scale = scale;

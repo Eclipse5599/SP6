@@ -6,5 +6,12 @@ La till stöd för actions som triggas av knapptryckningar.
 
 Ändrade hur fönsterstorleken ställs in.
 La till så att GameObject kan hantera en kollision ytterligare.
-La till en aktion för att skjuta.
+La till en action för att skjuta.
 La till en subklass till GameObject för skott.
+
+Ändrade hur rörelse beräknas, nu görs det via krafter.
+Fixade till felaktig fpsbaserad gameloop.
+La till ett childobjekt som alltid ligger placerad åt det håll spelaren är vänd åt, används för vapen.
+Ändrade hur ljud spelas upp och sparas.
+La till triggerColliders.
+Fixade så att bilderna använder alpha.

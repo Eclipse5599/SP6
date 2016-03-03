@@ -48,7 +48,7 @@ public class Timer {
 		return delta;
 	}
 	
-	public float getRunTime () {
+	public long getRunTime () {
 		long runTime = ((System.currentTimeMillis() - startTime));
 		return runTime;
 	}

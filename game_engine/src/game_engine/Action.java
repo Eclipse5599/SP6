@@ -4,7 +4,7 @@ public abstract class Action {
 	private Timer frequency;
 	private long frequencyMillis;
 	private static final int STANDARD_FREQUENCY = 200;
-	private GameObject owner;
+	protected GameObject owner;
 	
 	public Action () {
 		frequency = new Timer(STANDARD_FREQUENCY);

@@ -9,6 +9,12 @@ public class GameObjectController extends Component {
 	private ArrayList<Integer> input = new ArrayList<Integer>();
 	private HashMap<Integer, Action> actionKeys = new HashMap<Integer, Action>(); 
 	private Physics physicsComponent;
+
+	private long jumpDuration = 800;
+	private Timer jumpTimer = new Timer(jumpDuration); 
+	private boolean jumpEnabled = true;
+	
+	private Vector2 upForce = new Vector2(0, -200), rightForce = new Vector2(100, 0), downForce = new Vector2(0, 100), leftForce = new Vector2(-100, 0);
 	
 	public GameObjectController (Physics physicsComponent) {
 		compType = Constants.ComponentType.controller;
@@ -25,23 +31,41 @@ public class GameObjectController extends Component {
 	}
 	
 	public void tick (float delta) {
-		if (!input.isEmpty()) {
+		if (physicsComponent != null) {
 			if (input.contains(up)) {
-				physicsComponent.moveUp();
-			} 
-			if (input.contains(right)) {
-				physicsComponent.moveRight();
-			} 
-			if (input.contains(down)) {
-				physicsComponent.moveDown();
-			} 
-			if (input.contains(left)) {
-				physicsComponent.moveLeft();
-			}
-			for (Integer aActionKey : actionKeys.keySet()) {
-				if (input.contains(aActionKey)) {
-					actionKeys.get(aActionKey).doAction();
+				if (physicsComponent.isGrounded() && jumpEnabled || !jumpEnabled) {
+					jumpTimer.reset();
 				}
+				if (!isJumping()) {
+					physicsComponent.removeForce(upForce);
+				} else {
+					physicsComponent.addForce(upForce);					
+				}
+				owner.setFacingDirection(Constants.Direction.north);
+			} else {
+				physicsComponent.removeForce(upForce);
+			}
+			if (input.contains(right)) {
+				physicsComponent.addForce(rightForce);
+				owner.setFacingDirection(Constants.Direction.east);
+			}  else {
+				physicsComponent.removeForce(rightForce);
+			}
+			if (input.contains(down)) {
+				physicsComponent.addForce(downForce);
+			}  else {
+				physicsComponent.removeForce(downForce);
+			}
+			if (input.contains(left)) {
+				owner.setFacingDirection(Constants.Direction.west);
+				physicsComponent.addForce(leftForce);
+			} else {
+				physicsComponent.removeForce(leftForce);
+			}
+		}
+		for (Integer aActionKey : actionKeys.keySet()) {
+			if (input.contains(aActionKey)) {
+				actionKeys.get(aActionKey).doAction();
 			}
 		}
 	}
@@ -62,5 +86,19 @@ public class GameObjectController extends Component {
 		if (!actionKeys.containsKey(actionKey) && !actionKeys.containsValue(a)) {
 			actionKeys.put(actionKey, a);
 		}
+	}
+	public boolean isJumping () {
+		if (jumpTimer.getRunTime() < jumpDuration) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean getJumpEnabled () {
+		return jumpEnabled;
+	}
+	
+	public void setJumpEnabled (boolean state) {
+		jumpEnabled = state;
 	}
 }

@@ -2,14 +2,13 @@ package game_engine;
 
 public class Collider extends Component {
 	
+	public static enum ColliderType{circle, rectangle};
 	private Physics physics;
 	private double radius;
 	private int height, width;
 	public ColliderType colType;
-	public static enum ColliderType{circle, rectangle};
-	private boolean northCollided = false, eastCollided = false, southCollided = false, westCollided = false;
+	private boolean northCollided = false, eastCollided = false, southCollided = false, westCollided = false, parentHasCollider = true, isTrigger = false;
 	private Collider parentCollider = null;
-	private boolean parentHasCollider = true;
 	
 	public Collider (Graphic g) {
 		compType = Constants.ComponentType.collider;
@@ -32,7 +31,7 @@ public class Collider extends Component {
 	}
 	
 	public boolean xCollide (float xMov, Collider other) {
-		if (other != this && (!other.owner.hasParent() || other.owner.getParent() != this.owner)) {
+		if (other != this && (!other.owner.hasParent() || other.owner.getParent() != this.owner) && !other.getIsTrigger()) {
 			if (xIntersect(xMov, other)) {
 				owner.doEvent(Constants.Event.collision);
 				owner.handleCollisionExtras(other.owner);
@@ -42,10 +41,10 @@ public class Collider extends Component {
 		return false;
 	}
 	public boolean yCollide (float yMov, Collider other) {
-		if (other != this && (!other.owner.hasParent() || other.owner.getParent() != this.owner)) {
+		if (other != this && (!other.owner.hasParent() || other.owner.getParent() != this.owner) && !other.getIsTrigger()) {
 			boolean wasGrounded = physics.isGrounded();
 			if (yIntersect(yMov, other)) {
-				if ((!wasGrounded || !physics.getJumpEnabled()) && yMov > 0) {
+				if ((!wasGrounded) && yMov > 0) {
 					owner.doEvent(Constants.Event.collision);
 				} else if (yMov < 0) {
 					owner.doEvent(Constants.Event.collision);
@@ -83,22 +82,30 @@ public class Collider extends Component {
 			
 			if (rx <= orx && rx >= olx) { //collided with right side
 				if ((uy <= oly && uy >= ouy) || (ly <= oly && ly >= ouy)) {
-					other.setWestCollided(true);
-					setEastCollided(true);
+					if (!isTrigger) {
+						other.setWestCollided(true);
+						setEastCollided(true);
+					}
 					return true;
 				}else if ((ouy <= ly && ouy >= uy) || (oly <= ly && oly >= uy)) {
-					other.setWestCollided(true);
-					setEastCollided(true);
+					if (!isTrigger) {
+						other.setWestCollided(true);
+						setEastCollided(true);
+					}
 					return true;
 				}
 			} else if (lx <= orx && lx >= olx) {//collided with left side
 				if ((uy <= oly && uy >= ouy) || (ly <= oly && ly >= ouy)) {
-					other.setEastCollided(true);
-					setWestCollided(true);
+					if (!isTrigger) {
+						other.setEastCollided(true);
+						setWestCollided(true);
+					}
 					return true;
 				}else if ((ouy <= ly && ouy >= uy) || (oly <= ly && oly >= uy)) {
-					other.setEastCollided(true);
-					setWestCollided(true);
+					if (!isTrigger) {
+						other.setEastCollided(true);
+						setWestCollided(true);
+					}
 					return true;
 				}
 			}
@@ -133,22 +140,30 @@ public class Collider extends Component {
 			
 			if (uy <= oly && uy >= ouy){ //Collided with head
 				if ((rx <= orx && rx >= olx) || (lx <= orx && lx >= olx)) {
-					other.setSouthCollided(true);
-					setNorthCollided(true);
+					if (!isTrigger) {
+						other.setSouthCollided(true);
+						setNorthCollided(true);
+					}
 					return true;					
 				} else if ((orx <= rx && orx >= lx) || (olx <= rx && olx >= lx)) {
-					other.setSouthCollided(true);
-					setNorthCollided(true);
+					if (!isTrigger) {
+						other.setSouthCollided(true);
+						setNorthCollided(true);
+					}
 					return true;					
 				}
 			} else if (ly <= oly && ly >= ouy) { //Collided with feet
 				if ((rx <= orx && rx >= olx) || (lx <= orx && lx >= olx)) {
-					other.setNorthCollided(true);
-					setSouthCollided(true);
+					if (!isTrigger) {
+						other.setNorthCollided(true);
+						setSouthCollided(true);
+					}
 					return true;					
 				}else if ((orx <= rx && orx >= lx) || (olx <= rx && olx >= lx)) {
-					other.setNorthCollided(true);
-					setSouthCollided(true);
+					if (!isTrigger) {
+						other.setNorthCollided(true);
+						setSouthCollided(true);
+					}
 					return true;					
 				}
 			}
@@ -205,6 +220,10 @@ public class Collider extends Component {
 		return westCollided;
 	}
 	
+	public boolean getIsTrigger () {
+		return isTrigger;
+	}
+	
 	@Override
 	public void setOwner (GameObject owner) {
 		this.owner = owner;
@@ -228,6 +247,10 @@ public class Collider extends Component {
 	public void setWestCollided (boolean status) {
 		westCollided = status;
 		updateParentCollider();
+	}
+	
+	public void setIsTrigger (boolean state) {
+		isTrigger = state;
 	}
 	
 	@Override

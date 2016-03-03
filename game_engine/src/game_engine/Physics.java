@@ -1,153 +1,63 @@
 package game_engine;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 //Holds data related to physics 
 
 public class Physics extends Component {
+
+	private Vector2 velocity = new Vector2(0, 0), acc = new Vector2(0, 0);
 	private float mass;
-	private float xVelocity = 0, yVelocity = 0;
-	private float maxVelocity, minVelocity;
-	private float acceleration = 10f;
-	private static float absoluteMaxVelocity = 100;
-	private boolean moveUp = false, moveRight = false, moveDown = false, moveLeft = false, grounded = false, jumpEnabled = true, gravityException = false; 
-	private long jumpDuration = 1000;
-	private Timer jumpTimer = new Timer(jumpDuration); 
+	private boolean grounded = false, gravityException = false; 
+	
 	private Physics parentPhysics;
 	
-	//TODO: Hastigheter åt två motsatta håll tar ej ut varandra.
-	//TODO: Accelerationer upp/vänster är långsammare än accelerationen åt höger/ner.
+	private ConcurrentLinkedQueue<Vector2> forces = new ConcurrentLinkedQueue<Vector2>();
+	
+	
 	public Physics (float mass) {
 		compType = Constants.ComponentType.physics;
 		this.mass = mass;
-		maxVelocity = absoluteMaxVelocity/mass;
-		minVelocity = -maxVelocity; 
-		
-		acceleration  = maxVelocity*2;
-		
-		if (maxVelocity < 1) {
-			maxVelocity = 1; 
-			minVelocity = -maxVelocity;
-		} else if (maxVelocity > absoluteMaxVelocity) {
-			maxVelocity = absoluteMaxVelocity;
-			minVelocity = -maxVelocity;
-		}
 	}
 	
 	@Override
 	public void tick (float delta) {
-		//Vertical
-		if (moveUp && moveDown) {
-			moveUp = false;
-			moveDown = false;
+		Vector2 sumForces = new Vector2(0, 0);
+		for (Vector2 aForce : forces) {
+			sumForces.add(aForce);
 		}
-		if (moveUp || isJumping()) {
-			moveUp = true;
-			yVelocity -= acceleration*5*delta;
-		}
-		if (moveDown) {
-			yVelocity += acceleration*delta;
-		}
+		sumForces.multiply(25);
 		
-		//Horizontal
-		if (moveRight && moveLeft) {
-			moveRight = false;
-			moveLeft = false;
-		}
-		if (moveRight) {
-			xVelocity += acceleration*delta;
-		}
-		if (moveLeft) {
-			xVelocity -= acceleration*delta;
-		}
+		acc = sumForces;
+		acc.divide(mass);
 		
-		//Lock velocity
-		if (yVelocity > maxVelocity) {
-			yVelocity = maxVelocity;
-		} else if (yVelocity < minVelocity) {
-			yVelocity = minVelocity;
-		}
-		if (xVelocity > maxVelocity) {
-			xVelocity = maxVelocity;
-		} else if (xVelocity < minVelocity) {
-			xVelocity = minVelocity;
-		}
+		velocity.add(acc);
+		velocity.divide(2.0f);
 		
-		//Slow down
-		if (!moveUp && !moveDown) {
-			if ((yVelocity < 0.001 && yVelocity > 0) || (yVelocity > -0.001 && yVelocity < 0)){
-				yVelocity = 0;
-			} else {
-				if (yVelocity < 0) {
-					yVelocity += acceleration*delta;
-				} else if (yVelocity > 0){
-					yVelocity -= acceleration*delta;
-				}
-			}
-		}
-		if (!moveRight && !moveLeft) {
-			if ((xVelocity < 0.001 && xVelocity > 0) || (xVelocity > -0.001 && xVelocity < 0)){
-				xVelocity = 0;
-			} else {
-				if (xVelocity < 0) {
-					xVelocity += acceleration*delta;
-				} else if (xVelocity > 0){
-					xVelocity -= acceleration*delta;
-				}
-			}
-		}
-		
-		if (moveUp) {
-			owner.setFacingDirection(Constants.Direction.north);
-		} else if (moveLeft) {
-			owner.setFacingDirection(Constants.Direction.west);
-		} else if (moveRight) {
-			owner.setFacingDirection(Constants.Direction.east);
-		}
-		
-		moveUp = false;
-		moveRight = false;
-		moveDown = false;
-		moveLeft = false;
-	}
-	
-	public void moveUp () {
-		if (grounded || isJumping() || !jumpEnabled) {
-			if (grounded && jumpEnabled) {
-//				grounded = false;
-				jumpTimer.reset();
-			}
-			moveUp = true;
-		}
-	}
-	
-	public void moveRight () {
-		moveRight = true;
-	}
-	
-	public void moveDown () {
-		moveDown = true;
-	}
-	public void moveLeft () {
-		moveLeft = true;
+		forces.clear();
 	}	
 	
-	public float getXVelocity () {
-		return xVelocity;
+	public void addForce (Vector2 force) {
+		if (!forces.contains(force)) {
+			forces.add(force);
+		}
 	}
-	
-	public float getYVelocity () {
-		return yVelocity;
+	public void removeForce(Vector2 force) {
+		if (forces.contains(force)) {
+			forces.remove(force);
+		}
 	}
 	
 	public float getMass () {
 		return mass;
 	}
-
-	public boolean getJumpEnabled () {
-		return jumpEnabled;
-	}
 	
 	public Physics getParentPhysics () {
 		return parentPhysics;
+	}
+	
+	public Vector2 getVelocity() {
+		return velocity;
 	}
 	
 	public boolean gravityException() {
@@ -158,31 +68,12 @@ public class Physics extends Component {
 		this.grounded = grounded;
 	}
 	
-	public void setJumpEnabled (boolean state) {
-		jumpEnabled = state;
-	}
-	
-	public void setAcceleration (float acc) {
-		acceleration = acc;
-	}
-	public void setMaxVelocity (float maxVel) {
-		maxVelocity = maxVel;
-		minVelocity = -maxVel;
-	}
-	
 	public void setGravityException(boolean state) {
 		gravityException = state;
 	}
 	
 	public boolean isGrounded() {
 		return grounded;
-	}
-	
-	public boolean isJumping () {
-		if (jumpTimer.getRunTime() < jumpDuration) {
-			return true;
-		}
-		return false;
 	}
 	
 	@Override

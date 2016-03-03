@@ -1,10 +1,5 @@
 package game_engine;
 
-import java.util.ArrayList;
-
-//Uses Components from the component class to create objects used in the game
-
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GameObject {
@@ -15,6 +10,7 @@ public class GameObject {
 	private Transform transform;
 	private String name;
 	private Constants.Direction facing = Constants.Direction.east;  
+	private int width = 0, height = 0;
 	
 	public GameObject (String name, GameObject parent, int x, int y) {
 		this.name = name;
@@ -38,6 +34,10 @@ public class GameObject {
 	public void addComponent (Component c) {
 		components.add(c);
 		c.setOwner(this);
+		if (c.getType() == Constants.ComponentType.graphic) {
+			width = ((Graphic)c).getWidth();
+			height = ((Graphic)c).getHeight();
+		}
 	}
 	
 	public void addAction (int actionKey, Action a) {
@@ -54,9 +54,11 @@ public class GameObject {
 	}
 	
 	public void doEvent (Constants.Event event) {
-		if (hasComponent(Constants.ComponentType.sound)) {
-			Sound soundComponent = (Sound) getComponent(Constants.ComponentType.sound);
-			Constants.theSoundEngine.playSound(soundComponent.getEventSound(event));
+		if (event == Constants.Event.collision) {
+			if (hasComponent(Constants.ComponentType.sound)) {
+				Sound soundComponent = (Sound) getComponent(Constants.ComponentType.sound);
+				Constants.theSoundEngine.playSound(soundComponent.getEventSound(event));
+			}
 		}
 	}
 	
@@ -110,8 +112,15 @@ public class GameObject {
 		return parent;
 	}
 	
-	public Constants.Direction getFacingDirection() {
+	public Constants.Direction getFacingDirection () {
 		return facing;
+	}
+	
+	public int getWidth () {
+		return width;
+	}
+	public int getHeight () {
+		return height;
 	}
 
 	//Setters
